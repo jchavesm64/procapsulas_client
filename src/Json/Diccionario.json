@@ -1,0 +1,18 @@
+{
+    "datos":[
+        {
+            "clave": "INICIAR SESION",
+            "esp": "Iniciar sesión",
+            "fra": "Se connecter",
+            "ing": "Log in",
+            "man": " 登 录"
+        },
+        {
+            "Clave": "GUARDAR",
+            "esp": "Guardar",
+            "fra": "Sauvegarder",
+            "ing": "Save",
+            "man": "保 存"
+        }
+    ]
+}
