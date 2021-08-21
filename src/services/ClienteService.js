@@ -9,12 +9,19 @@ export const OBTENER_CLIENTES = gql`
             codigo
             pais
             ciudad
+            city
+            calle
+            cp
             direccion
             telefonos{
                 telefono
             }
             correos{
                 email
+            }
+            redes{
+                red
+                enlace
             }
             estado
         }
@@ -30,12 +37,19 @@ export const OBTENER_CLIENTE = gql`
             codigo
             pais
             ciudad
+            city
+            calle
+            cp
             direccion
             telefonos{
                 telefono
             }
             correos{
                 email
+            }
+            redes{
+                red
+                enlace
             }
             estado
         }

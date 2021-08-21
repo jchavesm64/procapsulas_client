@@ -129,14 +129,14 @@ const NuevoMovimiento = (props) => {
                             <Input type="number" placeholder="Precio Unidad" value={precio} onChange={(e) => setPrecio(e)} />
                         </div>
                         <div className="col-md-6">
-                            <InputPicker className="w-100" data={[{ label: 'US Dollar', value: 'US_DOLLAR' }, { label: 'Colón', value: 'COLON' }, { label: 'Yen', value: 'YEN' }]} placeholder="Moneda" value={moneda} onChange={(e) => setMoneda(e)} />
+                            <InputPicker className="w-100" data={[{ label: 'US Dollar', value: 'US Dollar' }, { label: 'Colón', value: 'Colón' }, { label: 'Yen', value: 'Yen' }]} placeholder="Moneda" value={moneda} onChange={(e) => setMoneda(e)} />
                         </div>
                     </div>
 
                 </div>
             </div>
             <div className="w-100 mx-auto">
-                <h6>Seleccione el archivo CAO</h6>
+                <h6>Seleccione el archivo COA</h6>
                 <Uploader draggable removable fileList={[]} fileListVisible={false} multiple={false} autoUpload={false} onChange={selectArchivo} accept="application/*" className="text-center"> 
                     <div style={{lineHeight: '100px'}}>{cao === "" ? "Seleccion o Arrastre el archivo a esta area": cao}</div>
                 </Uploader>

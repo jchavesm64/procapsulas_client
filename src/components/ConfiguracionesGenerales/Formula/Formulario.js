@@ -1,5 +1,6 @@
+/* eslint-disable array-callback-return */
 import React, { useState, useEffect } from 'react'
-import { Notification, Loader, Table, InputPicker } from 'rsuite'
+import { Notification, Loader, Table, InputPicker, Checkbox } from 'rsuite'
 import Boton from '../../shared/Boton'
 import { withRouter } from 'react-router-dom'
 import Action from '../../shared/Action'
@@ -7,27 +8,32 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import { UPDATE_FORMULA } from '../../../services/FormulaService'
 import { OBTENER_MATERIAS_PRIMAS } from '../../../services/MateriaPrimaService'
 import { OBTENER_FORMULAS_BASE } from '../../../services/FormulaBaseService'
+import { OBTENER_CLIENTES } from '../../../services/ClienteService'
 import { Input } from 'rsuite';
 const { Column, HeaderCell, Cell, Pagination } = Table;
 
 const FormularioFormula = ({ props, formula }) => {
+    console.log(formula)
+
     const [datos, setDatos] = useState(formula.elementos)
     const [nombre, setNombre] = useState(formula.nombre)
-    const [tipo, setTipo] = useState(formula.tipo)
+    const [cliente, setCliente] = useState((formula.cliente === undefined || formula.cliente === null) ? '' : formula.cliente.id)
     const [base, setBase] = useState(formula.base === undefined ? '' : formula.base.id)
     const [page, setPage] = useState(1);
     const [displayLength, setDisplayLength] = useState(10);
     const [filter, setFilter] = useState('');
     const { loading, error, data: materias_primas } = useQuery(OBTENER_MATERIAS_PRIMAS, { pollInterval: 1000 });
     const { loading: load_formulas, error: error_formulas, data: formulas } = useQuery(OBTENER_FORMULAS_BASE, { pollInterval: 1000 });
+    const { loading: load_clientes, error: error_clientes, data: clientes } = useQuery(OBTENER_CLIENTES, { pollInterval: 1000 });
     const [actualizar] = useMutation(UPDATE_FORMULA)
     const [editar, setEditar] = useState({ dato: null, bool: false, porcentaje: 0 });
+    const [mostrar, setMostrar] = useState(formula.base !== undefined)
 
     useEffect(() => {
         setNombre(formula.nombre)
         setDatos(formula.elementos)
-        setTipo(formula.tipo)
         setBase(formula.base === undefined ? '' : formula.base.id)
+        setCliente((formula.cliente === undefined || formula.cliente === null) ? '' : formula.cliente.id)
     }, [formula])
 
     const handleChangePage = (dataKey) => {
@@ -143,17 +149,17 @@ const FormularioFormula = ({ props, formula }) => {
                 if(!base){
                     input = {
                         nombre,
-                        tipo,
                         elementos,
+                        cliente,
                         porcentajes,
                         estado: 'ACTIVO'
                     }
                 }else{
                     input = {
                         nombre,
-                        tipo,
                         elementos,
                         porcentajes,
+                        cliente,
                         formulaBase: base.id,
                         estado: 'ACTIVO'
                     }
@@ -212,7 +218,23 @@ const FormularioFormula = ({ props, formula }) => {
         return []
     }
 
-    if (loading || load_formulas) return (<Loader backdrop content="Cargando..." vertical size="lg" />);
+    const getClientes = () => {
+        if (clientes !== null) {
+            if (clientes.obtenerClientes) {
+                var datos = []
+                clientes.obtenerClientes.map(item => {
+                    datos.push({
+                        label: item.nombre,
+                        value: item.id
+                    })
+                })
+                return datos
+            }
+        }
+        return []
+    }
+
+    if (loading || load_formulas || load_clientes) return (<Loader backdrop content="Cargando..." vertical size="lg" />);
     if (error) {
         Notification['error']({
             title: 'Error',
@@ -227,6 +249,13 @@ const FormularioFormula = ({ props, formula }) => {
             description: 'Error, no podemos obtener la información de fórmulas, verificar tu conexión a internet'
         })
     }
+    if (error_clientes) {
+        Notification['error']({
+            title: 'Error',
+            duration: 20000,
+            description: 'Error, no podemos obtener la información de clientes, verificar tu conexión a internet'
+        })
+    }
 
     const data = getData()
     console.log(base)
@@ -236,17 +265,18 @@ const FormularioFormula = ({ props, formula }) => {
             <div>
                 <Boton name="Atras" onClick={e => props.history.push(`/config/formulas`)} icon="arrow-left-line" tooltip="Ir a fórmulas" size="xs" color="blue" />
             </div>
-            <div class="row my-1">
-                <div className="col-md-4">
-                    <h6 className="my-1">Tipo de Cápsula</h6>
-                    <InputPicker className="w-100" data={[{ label: 'Polvo', value: 'POLVO' }, { label: 'Blanda', value: 'BLANDA' }]} placeholder="Tipo de Cápsula" value={tipo} onChange={(e) => setTipo(e)} />
+            <div className="row">
+                <div className="col-md-5">
+                    <h6 className="my-1">Cliente</h6>
+                    <InputPicker className="w-100" data={getClientes()} placeholder="Cliente" value={cliente} onChange={(e) => setCliente(e)} />
                 </div>
-                <div className="col-md-8">
+                <div className="col-md-7">
                     <h5>Nombre de la fórmula</h5>
                     <Input className="my-1" type="text" placeholder="Nombre de la fórmula" value={nombre} onChange={(e) => setNombre(e)} />
                 </div>
             </div>
-            {tipo === 'BLANDA' &&
+            <Checkbox checked={mostrar} onChange={() => setMostrar(!mostrar)}>Marcar si la fórmula requiere de una fórmula base</Checkbox>
+            {mostrar === true &&
                 <div className="row my-1 p-2">
                     <h6>Fórmula Base</h6>
                     <InputPicker data={getFormulasBase()} placeholder="Fórmula Base" value={base} onChange={(e) => setBase(e)} />

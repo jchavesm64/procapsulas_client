@@ -109,8 +109,14 @@ const Formulas = ({ ...props }) => {
                             <Cell dataKey='nombre' />
                         </Column>
                         <Column width={500} flexGrow={1}>
-                            <HeaderCell>Tipo de Cápsula</HeaderCell>
-                            <Cell dataKey='tipo' />
+                            <HeaderCell>Cliente</HeaderCell>
+                            <Cell>
+                                {
+                                    rowData => {
+                                        return(<label>{rowData.cliente ? rowData.cliente.nombre : "No se asigno un cliente"}</label>)
+                                    }
+                                }
+                            </Cell>
                         </Column>
                         <Column width={150} fixed="right">
                             <HeaderCell>Acciones</HeaderCell>

@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useState } from 'react'
 import { withRouter } from 'react-router'
 import Action from '../shared/Action'
@@ -26,8 +27,8 @@ const NuevoUsuario = ({ ...props }) => {
     const [rolesUsuario, setRolesUsuario] = useState(false);
     const [nombre, setNombre] = useState(usuario.nombre);
     const [cedula, setCedula] = useState(usuario.cedula);
-    const [telefonos, setTelefonos] = useState(usuario.telefonos);
-    const [correos, setCorreos] = useState(usuario.correos);
+    const [telefonos] = useState(usuario.telefonos);
+    const [correos] = useState(usuario.correos);
     const [roles, setRoles] = useState(getSelectedRoles());
     const [refrescar, setRefrescar] = useState(false);
     const { loading: load_roles, data: data_roles } = useQuery(OBTENER_ROLES, { pollInterval: 1000 });
@@ -35,16 +36,16 @@ const NuevoUsuario = ({ ...props }) => {
     const [code, setCode] = useState('')
 
     const agregarTelefono = (telefono) => {
-        if(code !== ""){
+        if (code !== "") {
             var band = false;
             telefonos.map(t => {
-                if (code+' '+t.telefono === telefono) {
+                if (code + ' ' + t.telefono === telefono) {
                     band = true;
                 }
             })
             if (!band) {
                 telefonos.push({
-                    "telefono": code+' '+telefono
+                    "telefono": code + ' ' + telefono
                 })
                 document.getElementById('telefono').value = "";
                 setRefrescar(!refrescar);
@@ -55,7 +56,7 @@ const NuevoUsuario = ({ ...props }) => {
                     description: "Ya está agregado el telefono"
                 })
             }
-        }else{
+        } else {
             Notification['info']({
                 title: 'Agregar Telefono',
                 duration: 5000,
@@ -170,7 +171,7 @@ const NuevoUsuario = ({ ...props }) => {
                     <div>
                         <Boton name="Atras" onClick={e => props.history.push(`/usuarios`)} icon="arrow-left-line" tooltip="Ir a usuarios" size="xs" color="blue" />
                     </div>
-                    <h3 className="text-center">Editar Usuario</h3>
+                    <h3 className="text-center">{props.uso === true ? "Editar Usuario" : "Detalles del Usuario"}</h3>
                 </>
             }
             <div>
@@ -199,30 +200,34 @@ const NuevoUsuario = ({ ...props }) => {
                     </div>
                 </div>
                 {contacto &&
-                    <div style={{margin: 0, padding: 0}} className="row mt-3">
+                    <div style={{ margin: 0, padding: 0 }} className="row mt-3">
                         <div className="col-md-6 d-inline-block">
                             <List estilos="w-90 mx-auto" data={telefonos} clave="telefono" header="Teleonos" edit={false} borrar={true} setRefrescar={setRefrescar} />
                             <div className="input-group mt-3 mb-3 w-90 mx-auto">
-                                <InputGroup className="mx-auto w-90 btn-outline-light mb-2">
-                                    <InputGroup.Addon>
-                                        <Icon icon="phone" />
-                                    </InputGroup.Addon>
-                                    <InputPicker className="h-100 rounded-0" size="md" placeholder="Area" data={getCodes()} searchable={true} onChange={(e) => setCode(e)} style={{border: 'none'}}/>
-                                    <input id="telefono" type="number" placeholder="Numero de telefono" className="rounded-0 form-control" />
-                                    <Boton className="rounded-0 h-100" icon="save" color="green" onClick={() => agregarTelefono(document.getElementById('telefono').value)} tooltip="Agregar Telefono" />
-                                </InputGroup>
+                                {props.uso === true &&
+                                    <InputGroup className="mx-auto w-90 btn-outline-light mb-2">
+                                        <InputGroup.Addon>
+                                            <Icon icon="phone" />
+                                        </InputGroup.Addon>
+                                        <InputPicker className="h-100 rounded-0" size="md" placeholder="Area" data={getCodes()} searchable={true} onChange={(e) => setCode(e)} style={{ border: 'none' }} />
+                                        <input id="telefono" type="number" placeholder="Numero de telefono" className="rounded-0 form-control" />
+                                        <Boton className="rounded-0 h-100" icon="save" color="green" onClick={() => agregarTelefono(document.getElementById('telefono').value)} tooltip="Agregar Telefono" />
+                                    </InputGroup>
+                                }
                             </div>
                         </div>
                         <div className="col-md-6 d-inline-block">
                             <List data={correos} clave="email" header="Correos" edit={false} borrar={true} setRefrescar={setRefrescar} />
                             <div className="input-group mt-3 mb-3 w-90 mx-auto">
-                                <InputGroup className="mx-auto w-90 btn-outline-light mb-2">
-                                    <InputGroup.Addon>
-                                        <Icon icon="at" />
-                                    </InputGroup.Addon>
-                                    <input id="correo" type="email" placeholder="Dirección de correo electronico" className="rounded-0 form-control" />
-                                    <Boton className="rounded-0 h-100" icon="save" color="green" onClick={() => agregarCorreo(document.getElementById('correo').value)} tooltip="Agregar Correo" />
-                                </InputGroup>
+                                {props.uso === true &&
+                                    <InputGroup className="mx-auto w-90 btn-outline-light mb-2">
+                                        <InputGroup.Addon>
+                                            <Icon icon="at" />
+                                        </InputGroup.Addon>
+                                        <input id="correo" type="email" placeholder="Dirección de correo electronico" className="rounded-0 form-control" />
+                                        <Boton className="rounded-0 h-100" icon="save" color="green" onClick={() => agregarCorreo(document.getElementById('correo').value)} tooltip="Agregar Correo" />
+                                    </InputGroup>
+                                }
                             </div>
                         </div>
                     </div>
@@ -244,9 +249,11 @@ const NuevoUsuario = ({ ...props }) => {
                     </>
                 }
             </div>
-            <div className="d-flex justify-content-end float-rigth mt-2">
-                <Boton onClick={onSaveUsuario} tooltip="Guardar Usuario" name="Guardar" icon="save" color="green" disabled={validarForm()} />
-            </div>
+            {props.uso === true &&
+                <div className="d-flex justify-content-end float-rigth mt-2">
+                    <Boton onClick={onSaveUsuario} tooltip="Guardar Usuario" name="Guardar" icon="save" color="green" disabled={validarForm()} />
+                </div>
+            }
         </>
     )
 }

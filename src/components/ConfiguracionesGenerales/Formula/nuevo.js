@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import Boton from '../../shared/Boton';
@@ -7,11 +8,13 @@ import {
     Loader,
     Notification,
     InputPicker,
+    Checkbox
 } from 'rsuite';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { SAVE_FORMULA } from '../../../services/FormulaService'
 import { OBTENER_MATERIAS_PRIMAS } from '../../../services/MateriaPrimaService'
 import { OBTENER_FORMULAS_BASE } from '../../../services/FormulaBaseService'
+import { OBTENER_CLIENTES } from '../../../services/ClienteService'
 import { Input } from 'rsuite';
 const { Column, HeaderCell, Cell, Pagination } = Table;
 
@@ -20,11 +23,13 @@ const NuevaFormula = ({ ...props }) => {
     const [displayLength, setDisplayLength] = useState(10);
     const { loading, error, data: materias_primas } = useQuery(OBTENER_MATERIAS_PRIMAS, { pollInterval: 1000 });
     const { loading: load_formulas, error: error_formulas, data: formulas } = useQuery(OBTENER_FORMULAS_BASE, { pollInterval: 1000 });
+    const { loading: load_clientes, error: error_clientes, data: clientes } = useQuery(OBTENER_CLIENTES, { pollInterval: 1000 });
     const [formula, setFormula] = useState([])
     const [filter, setFilter] = useState('')
     const [nombre, setNombre] = useState("")
-    const [tipo, setTipo] = useState('')
     const [base, setBase] = useState('')
+    const [mostrar, setMostrar] = useState(false)
+    const [cliente, setCliente] = useState('')
     const [insertar] = useMutation(SAVE_FORMULA)
 
     const handleChangePage = (dataKey) => {
@@ -64,18 +69,16 @@ const NuevaFormula = ({ ...props }) => {
                     porcentajes.push(item.porcentaje)
                 })
                 var input = {}
-                if(!base){
+                if (!base) {
                     input = {
                         nombre,
-                        tipo,
                         elementos,
                         porcentajes,
                         estado: 'ACTIVO'
                     }
-                }else{
+                } else {
                     input = {
                         nombre,
-                        tipo,
                         elementos,
                         porcentajes,
                         formulaBase: base.id,
@@ -195,15 +198,15 @@ const NuevaFormula = ({ ...props }) => {
     }
 
     const validarFormula = () => {
-        if(tipo === 'BLANDA'){
+        if (mostrar === true) {
             return formula.length === 0 || !nombre || !base;
         }
         return formula.length === 0 || !nombre;
     }
 
     const getFormulasBase = () => {
-        if(formulas !== null){
-            if(formulas.obtenerFormulasBase){
+        if (formulas !== null) {
+            if (formulas.obtenerFormulasBase) {
                 var datos = []
                 formulas.obtenerFormulasBase.map(item => {
                     datos.push({
@@ -217,7 +220,23 @@ const NuevaFormula = ({ ...props }) => {
         return []
     }
 
-    if (loading || load_formulas) return (<Loader backdrop content="Cargando..." vertical size="lg" />);
+    const getClientes = () => {
+        if (clientes !== null) {
+            if (clientes.obtenerClientes) {
+                var datos = []
+                clientes.obtenerClientes.map(item => {
+                    datos.push({
+                        label: item.nombre,
+                        value: item.id
+                    })
+                })
+                return datos
+            }
+        }
+        return []
+    }
+
+    if (loading || load_formulas || load_clientes) return (<Loader backdrop content="Cargando..." vertical size="lg" />);
     if (error) {
         Notification['error']({
             title: 'Error',
@@ -232,6 +251,13 @@ const NuevaFormula = ({ ...props }) => {
             description: 'Error, no podemos obtener la información de fórmulas, verificar tu conexión a internet'
         })
     }
+    if (error_clientes) {
+        Notification['error']({
+            title: 'Error',
+            duration: 20000,
+            description: 'Error, no podemos obtener la información de clientes, verificar tu conexión a internet'
+        })
+    }
 
     const data = getData()
 
@@ -242,17 +268,18 @@ const NuevaFormula = ({ ...props }) => {
             </div>
             <h3 className="text-center">Gestión de formulas</h3>
             <hr />
-            <div class="row my-1">
-                <div className="col-md-4">
-                    <h6 className="my-1">Tipo de Cápsula</h6>
-                    <InputPicker className="w-100" data={[{ label: 'Polvo', value: 'POLVO' }, { label: 'Blanda', value: 'BLANDA' }]} placeholder="Tipo de Cápsula" value={tipo} onChange={(e) => setTipo(e)} />
+            <div className="row">
+                <div className="col-md-5">
+                    <h6 className="my-1">Cliente</h6>
+                    <InputPicker className="w-100" data={getClientes()} placeholder="Cliente" value={cliente} onChange={(e) => setCliente(e)} />
                 </div>
-                <div className="col-md-8">
+                <div className="col-md-7">
                     <h5>Nombre de la fórmula</h5>
                     <Input className="my-1" type="text" placeholder="Nombre de la fórmula" value={nombre} onChange={(e) => setNombre(e)} />
                 </div>
             </div>
-            {tipo === 'BLANDA' &&
+            <Checkbox onChange={() => setMostrar(!mostrar)}>Marcar si la fórmula requiere de una fórmula base</Checkbox>
+            {mostrar === true &&
                 <div className="row my-1 p-2">
                     <h6>Fórmula Base</h6>
                     <InputPicker data={getFormulasBase()} placeholder="Fórmula Base" value={base} onChange={(e) => setBase(e)} />

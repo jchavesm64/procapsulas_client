@@ -58,10 +58,12 @@ const Router = ({ refetch, session }) => {
                                 <Route exact path="/config/roles" render={() => <Roles session={data} refetch={refetch}/>}/>
                                 <Route exact path="/usuarios" render={(props) => <Usuarios session={data} refetch={refetch} {...props}/>}/>
                                 <Route exact path="/usuarios/nuevo" render={(props) => <NuevoUsuario session={data} refetch={refetch} {...props}/>}/>
-                                <Route exact path="/usuarios/editar/:id" render={(props) => <EditarUsuario session={data} refetch={refetch} {...props}/>}/>
+                                <Route exact path="/usuarios/editar/:id" render={(props) => <EditarUsuario uso={true} session={data} refetch={refetch} {...props}/>}/>
+                                <Route exact path="/usuarios/detalles/:id" render={(props) => <EditarUsuario uso={false} session={data} refetch={refetch} {...props}/>}/>
                                 <Route exact path="/clientes" render={(props) => <Clientes session={data} refetch={refetch} {...props}/>}/>
                                 <Route exact path="/clientes/nuevo" render={(props) => <NuevoCliente session={data} refetch={refetch} {...props}/>}/>
-                                <Route exact path="/clientes/editar/:id" render={(props) => <EditarCliente session={data} refetch={refetch} {...props}/>}/>
+                                <Route exact path="/clientes/editar/:id" render={(props) => <EditarCliente uso={true} session={data} refetch={refetch} {...props}/>}/>
+                                <Route exact path="/clientes/detalles/:id" render={(props) => <EditarCliente uso={false} session={data} refetch={refetch} {...props}/>}/>
                                 <Route exact path="/proveedores" render={(props) => <Proveedores session={data} refetch={refetch} {...props}/>}/>
                                 <Route exact path="/proveedores/nuevo" render={(props) => <NuevoProveedor session={data} refetch={refetch} {...props}/>}/>
                                 <Route exact path="/proveedores/editar/:id" render={(props) => <EditarProveedor uso={false} session={data} refetch={refetch} {...props}/>}/>

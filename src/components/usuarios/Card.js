@@ -28,6 +28,7 @@ const CardUsuarios = ({ ...props }) => {
             <div className="d-flex justify-content-end mx-1 my-1">
                 <div className="mx-1"><Link to={`usuarios/editar/${usuario.id}`}><Action tooltip="Editar Usuario" color="orange" icon="edit" size="xs"/></Link></div>
                 <div className="mx-1"><Action onClick={() => { props.session.roles.some(rol => rol.tipo === localStorage.getItem('rol') && (rol.acciones[0].eliminar === true)) ? setConfirmation({bool: true, id: usuario.id}) : mostrarMsj() }} tooltip="Eliminar Usuario" color="red" icon="trash" size="xs"/></div>
+                <div className="mx-1"><Link to={`usuarios/detalles/${usuario.id}`}><Action tooltip="Detalles del Usuario" color="blue" icon="info" size="xs"/></Link></div>
             </div>
         </Panel>
     )

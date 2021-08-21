@@ -42,6 +42,7 @@ const Editar = ({ ...props }) => {
                 id: formula.id,
                 tipo: formula.tipo,
                 nombre: formula.nombre,
+                cliente: formula.cliente,
                 elementos: elementos
             }
         } else {
@@ -49,6 +50,7 @@ const Editar = ({ ...props }) => {
                 id: formula.id,
                 tipo: formula.tipo,
                 nombre: formula.nombre,
+                cliente: formula.cliente,
                 elementos: elementos,
                 base: formula.formulaBase
             }

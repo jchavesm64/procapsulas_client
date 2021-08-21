@@ -17,8 +17,8 @@ const DetalllesFormula = ({ props, formula }) => {
             <div class="row my-1">
                 <h5>Nombre de la fórmula</h5>
                 <Input className="my-1" type="text" placeholder="Nombre de la fórmula" value={formula.nombre} />
-                <h5>Tipo de Cápsula</h5>
-                <Input className="my-1" type="text" placeholder="Tipo de Cápsula" value={formula.tipo} />
+                <h5>Cliente</h5>
+                <Input className="my-1" type="text" placeholder="Tipo de Cápsula" value={formula.cliente ? formula.cliente.nombre : "No se asigno un cliente"} />
             </div>
             <div className="my-2">
                 <Table className="shadow-lg" minHeight={300} autoHeight data={formula.elementos}>

@@ -7,7 +7,7 @@ import EditarCotizacion from './EditarCotizacion'
 
 const Editar = ({...props}) => {
     const { id } = props.match.params;
-    const { loading, error, data, refetch, startPolling, stopPolling } = useQuery(OBTENER_COTIZACION, { variables: { id: id }, pollInterval: 1000 });
+    const { loading, error, data, startPolling, stopPolling } = useQuery(OBTENER_COTIZACION, { variables: { id: id }, pollInterval: 1000 });
 
     useEffect(() => {
         startPolling(1000)
@@ -26,8 +26,6 @@ const Editar = ({...props}) => {
             description: "Error al obtener la informacion de la comision"
         })
     }
-
-    console.log(data)
 
     return (
         <EditarCotizacion props={props} cotizacion={data.obtenerCotizacion}/>

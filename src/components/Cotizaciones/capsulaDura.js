@@ -1,101 +1,76 @@
 /* eslint-disable array-callback-return */
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useMutation } from '@apollo/react-hooks'
-import { UPDATE_COTIZACION } from '../../services/CotizacionService'
+import { SAVE_COTIZACION } from '../../services/CotizacionService'
 import { Notification, Table, Input, InputPicker } from 'rsuite';
 import Boton from '../shared/Boton';
 const { Column, HeaderCell, Cell } = Table;
 
-const CapsulaPolvo = ({ ...props }) => {
-    const { formula, cliente, producto, objeto } = props
-    const [actualizar] = useMutation(UPDATE_COTIZACION)
+const CapsulaDura = ({ ...props }) => {
+    const [insertar] = useMutation(SAVE_COTIZACION)
     const [cotizacion, setCotizacion] = useState(null)
-    const [venta, setVenta] = useState(objeto.venta)
-    const [dosis, setDosis] = useState(objeto.dosis)
-    const [serving, setServing] = useState(objeto.serving)
-    const [envases, setEnvases] = useState(objeto.cant_env)
-    const [etiquetas, setEtiquetas] = useState(objeto.cant_eti)
-    const [costoEnvase, setCostoEnvase] = useState(objeto.cost_env)
-    const [costoEtiquetas, setCostoEtiquetas] = useState(objeto.cost_eti)
-    const [peso, setPeso] = useState(objeto.peso)
-
-    useEffect(() => {
-        setVenta(objeto.venta)
-        setPeso(objeto.peso)
-        setDosis(objeto.dosis)
-        setEnvases(objeto.cant_env)
-        setEtiquetas(objeto.cant_eti)
-        setServing(objeto.serving)
-        setCostoEnvase(objeto.cost_env)
-        setCostoEtiquetas(objeto.cost_eti)
-    }, [objeto])
-    
+    const [venta, setVenta] = useState(0)
+    const [cantidad, setCantidad] = useState(0)
+    const [envases, setEnvases] = useState(0)
+    const [etiquetas, setEtiquetas] = useState(0)
+    const [costoCapsula, setCostoCapsula] = useState(0)
+    const [costoEnvase, setCostoEnvase] = useState(0)
+    const [costoEtiquetas, setCostoEtiquetas] = useState(0)
+    const [peso, setPeso] = useState(0)
+    const { formula, cliente, producto } = props
 
     if (formula !== null && cotizacion === null) {
         const datos = []
-        for (let i = 0; i < objeto.elementos.length; i++) {
+        for (let i = 0; i < formula.elementos.length; i++) {
             datos.push({
-                materia_prima: objeto.elementos[i],
-                porcentaje: objeto.porcentajes[i],
-                precio_kilo: objeto.precios[i]
+                materia_prima: formula.elementos[i],
+                porcentaje: formula.porcentajes[i],
+                precio_kilo: 0
             })
         }
         setCotizacion(datos)
     }
 
-    const getGramosScoop = (porcentaje) => {
-        if (dosis > 0) {
-            return parseFloat((porcentaje * dosis) / 100).toFixed(2)
+    const getMiligramosCapsula = (porcentaje) => {
+        if (peso > 0) {
+            return parseFloat((porcentaje * peso) / 100).toFixed(2)
         }
         return 0
     }
 
-    const getGramosTarro = (porcentaje) => {
-        if (dosis > 0 && serving > 0) {
-            return parseFloat(getGramosScoop(porcentaje) * serving).toFixed(2)
+    const getGramosCapsula = (porcentaje) => {
+        if (peso > 0) {
+            return parseFloat(getMiligramosCapsula(porcentaje) / 1000).toFixed(2);
         }
         return 0
     }
 
     const getGramosEnvase = (porcentaje) => {
-        if (dosis > 0 && serving > 0 && envases > 0) {
-            return parseFloat(getGramosTarro(porcentaje) * envases).toFixed(2)
+        if (peso > 0 && cantidad > 0) {
+            return parseFloat((getMiligramosCapsula(porcentaje) / 1000) * cantidad).toFixed(2);
         }
         return 0
     }
 
-    const getKilosTotal = (porcentaje) => {
-        if (dosis > 0 && serving > 0 && envases > 0) {
-            return parseFloat((getGramosTarro(porcentaje) * envases) / 1000).toFixed(2)
+    const getGramosTotal = (porcentaje) => {
+        if (peso > 0 && cantidad > 0 && envases > 0) {
+            return parseFloat(((getMiligramosCapsula(porcentaje) / 1000) * cantidad) * envases).toFixed(2);
         }
         return 0
     }
 
-    const getTotalFila = (porcentaje, precio) => {
-        if (dosis > 0 && serving > 0 && envases > 0) {
-            return parseFloat(getKilosTotal(porcentaje) * precio).toFixed(2)
+    const getKilos = (porcentaje) => {
+        if (peso > 0 && cantidad > 0 && envases > 0) {
+            return parseFloat((((getMiligramosCapsula(porcentaje) / 1000) * cantidad) * envases) / 1000).toFixed(2);
         }
         return 0
-    }
-
-    const getTotal = () => {
-        if (cotizacion) {
-            var total = 0, item = null
-            for (let i = 0; i < cotizacion.length; i++) {
-                item = cotizacion[i]
-                if (item.precio_kilo !== 0) {
-                    total += parseFloat(getTotalFila(item.porcentaje, item.precio_kilo))
-                }
-            }
-            return parseFloat(total).toFixed(2)
-        }
     }
 
     const actualizarPrecio = (data, precio) => {
         var newDatos = []
         if (precio !== "") {
-            if (parseFloat(precio) >= 1) {
+            if (parseFloat(precio) > 1) {
                 cotizacion.map(item => {
                     if (item.materia_prima.id === data.materia_prima.id) {
                         newDatos.push({
@@ -138,14 +113,35 @@ const CapsulaPolvo = ({ ...props }) => {
         }
     }
 
-    const getCostoEnvace = () => {
-        if (envases > 0) {
-            return parseFloat(getTotal() / envases).toFixed(2)
+    const getTotalFila = (data) => {
+        if (peso > 0 && cantidad > 0 && envases > 0) {
+            return parseFloat(getKilos(data.porcentaje) * data.precio_kilo).toFixed(2)
         }
         return 0
     }
 
-    //Revisar
+    const getTotal = () => {
+        if (cantidad !== 0 && costoCapsula !== 0 && envases !== 0 && costoEnvase !== 0 && etiquetas !== 0 && costoEtiquetas !== 0) {
+            var total = 0;
+            cotizacion.map(item => {
+                total += parseFloat(getTotalFila(item))
+            })
+            total += parseFloat(costoCapsula * cantidad)
+            total += parseFloat(costoEnvase * envases)
+            total += parseFloat(costoEtiquetas * etiquetas)
+            return parseFloat(total).toFixed(2)
+        }
+        return 0
+    }
+
+    const getTotalTabla = () => {
+        var total = 0;
+        cotizacion.map(item => {
+            total += parseFloat(getTotalFila(item))
+        })
+        return total
+    }
+
     const onSaveCotizacion = async () => {
         var input = {}
         var ele = [], por = [], precio = []
@@ -162,8 +158,8 @@ const CapsulaPolvo = ({ ...props }) => {
             elementos: ele,
             porcentajes: por,
             precios: precio,
-            dosis: dosis,
-            serving: serving,
+            cant_cap: cantidad,
+            cost_cap: costoCapsula,
             cant_env: envases,
             cost_env: costoEnvase,
             cant_eti: etiquetas,
@@ -174,8 +170,8 @@ const CapsulaPolvo = ({ ...props }) => {
         }
         console.log(input)
         try {
-            const { data } = await actualizar({ variables: { id: objeto.id, input }, errorPolicy: 'all' })
-            const { estado, message } = data.actualizarCotizacion;
+            const { data } = await insertar({ variables: { input }, errorPolicy: 'all' })
+            const { estado, message } = data.insertarCotizacion;
             if (estado) {
                 Notification['success']({
                     title: 'Guardar Cotización',
@@ -201,25 +197,31 @@ const CapsulaPolvo = ({ ...props }) => {
     }
 
     const validarFormulario = () => {
-        return !formula || !cliente || !producto || !peso || !dosis || !serving || envases === 0 || costoEnvase === 0 || etiquetas === 0 || costoEtiquetas === 0 || venta === 0 || getTotal() === 0
+        return !formula || !cliente || !producto || !peso || cantidad === 0 || costoCapsula === 0 || envases === 0 || costoEnvase === 0 || etiquetas === 0 || costoEtiquetas === 0 || venta === 0 || getTotalTabla() === 0
     }
-    //Revisar
+
+    const getCostoEnvace = () => {
+        if (envases > 0) {
+            return parseFloat(getTotal() / envases).toFixed(2)
+        }
+        return 0
+    }
 
     return (
         <>
             <h5>Parámetros específicos de la cotización</h5>
             <div className="row my-2">
                 <div className="col-md-6">
-                    <h6>Dosis: Gramos por Scoop</h6>
-                    <Input type="number" min={1} value={dosis} onChange={(e) => setDosis(e)} />
+                    <h6>Cápsulas por envases</h6>
+                    <Input type="number" min={1} value={cantidad} onChange={(e) => setCantidad(e)} />
                     <h6>Total de envases</h6>
                     <Input type="number" min={1} value={envases} onChange={(e) => setEnvases(e)} />
                     <h6>Total de etiquetas</h6>
                     <Input type="number" min={1} value={etiquetas} onChange={(e) => setEtiquetas(e)} />
                 </div>
                 <div className="col-md-6">
-                    <h6>Serving</h6>
-                    <Input type="number" min={1} value={serving} onChange={(e) => setServing(e)} />
+                    <h6> Costo por Cápsula</h6>
+                    <Input type="number" min={1} value={costoCapsula} onChange={(e) => setCostoCapsula(e)} />
                     <h6>Costo por envase</h6>
                     <Input type="number" min={1} value={costoEnvase} onChange={(e) => setCostoEnvase(e)} />
                     <h6>Costo por etiqueta</h6>
@@ -227,17 +229,8 @@ const CapsulaPolvo = ({ ...props }) => {
                 </div>
             </div>
             <div className="w-50 mx-auto">
-                <h6>Cantidad de Polvo</h6>
-                <InputPicker cleanable={false} className="rounded-0 w-100" size="md" placeholder="Cantidad de Polvo" searchable={true} value={peso} onChange={(e) => setPeso(e)}
-                    data={[
-                        { 'label': '300gr', 'value': '300' },
-                        { 'label': '400gr', 'value': '400' },
-                        { 'label': '500gr', 'value': '500' },
-                        { 'label': '2lb', 'value': '900' },
-                        { 'label': '5lb', 'value': '2270' },
-                        { 'label': '10lb', 'value': '4540' }
-                    ]}
-                />
+                <h6>Peso de la Cápsula</h6>
+                <InputPicker cleanable={false} className="rounded-0 w-100" size="md" placeholder="Peso" data={[{'label': '250mg', 'value': '250'}, {'label': '500mg', 'value': '500'}, {'label': '1000mg', 'value': '1000'}]} searchable={true} onChange={(e) => setPeso(e)} />
             </div>
             <h5>Elementos de la formula</h5>
             <div>
@@ -257,27 +250,27 @@ const CapsulaPolvo = ({ ...props }) => {
                         <Cell dataKey="porcentaje" />
                     </Column>
                     <Column flexGrow={1}>
-                        <HeaderCell>GR / Scoop</HeaderCell>
+                        <HeaderCell>MG / Cápsula</HeaderCell>
                         <Cell>
                             {
                                 rowData => {
-                                    return (<label>{getGramosScoop(rowData.porcentaje)}</label>)
+                                    return (<label>{getMiligramosCapsula(rowData.porcentaje)}</label>)
                                 }
                             }
                         </Cell>
                     </Column>
                     <Column flexGrow={1}>
-                        <HeaderCell>GR / Tarro</HeaderCell>
+                        <HeaderCell>GR / Cápsula</HeaderCell>
                         <Cell>
                             {
                                 rowData => {
-                                    return (<label>{getGramosTarro(rowData.porcentaje)}</label>)
+                                    return (<label>{getGramosCapsula(rowData.porcentaje)}</label>)
                                 }
                             }
                         </Cell>
                     </Column>
                     <Column flexGrow={1}>
-                        <HeaderCell>Cantidad GR</HeaderCell>
+                        <HeaderCell>GR / Envase</HeaderCell>
                         <Cell>
                             {
                                 rowData => {
@@ -287,11 +280,21 @@ const CapsulaPolvo = ({ ...props }) => {
                         </Cell>
                     </Column>
                     <Column flexGrow={1}>
-                        <HeaderCell>Cantidad KG</HeaderCell>
+                        <HeaderCell>GR / Total</HeaderCell>
                         <Cell>
                             {
                                 rowData => {
-                                    return (<label>{getKilosTotal(rowData.porcentaje)}</label>)
+                                    return (<label>{getGramosTotal(rowData.porcentaje)}</label>)
+                                }
+                            }
+                        </Cell>
+                    </Column>
+                    <Column flexGrow={1}>
+                        <HeaderCell>KG / Total</HeaderCell>
+                        <Cell>
+                            {
+                                rowData => {
+                                    return (<label>{getKilos(rowData.porcentaje)}</label>)
                                 }
                             }
                         </Cell>
@@ -311,30 +314,29 @@ const CapsulaPolvo = ({ ...props }) => {
                         <Cell>
                             {
                                 rowData => {
-                                    return (<label>{getTotalFila(rowData.porcentaje, rowData.precio_kilo)}</label>)
+                                    return (<label>{getTotalFila(rowData)}</label>)
                                 }
                             }
                         </Cell>
                     </Column>
                 </Table>
-                <div className="d-flex justify-content-end mb-3 mt-1">
-                    <h6>Total: {getTotal(cotizacion === null ? [] : cotizacion)}</h6>
-                </div>
-                <div className="row my-2 p-2">
-                    <h6>Coste de Fabricación por Envase</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
-                    <h6>Venta al Cliente por envace</h6>
-                    <Input type="number" min={1} value={venta} onChange={(e) => setVenta(e)} />
-                    <h6>Ganancia</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(venta === 0 || envases === 0) ? 0 : (venta < (getTotal() / envases)) ? '0' : parseFloat(venta - (getTotal() / envases)).toFixed(2)}</label></strong>
-                </div>
-                <div className="d-flex justify-content-end my-2">
-                    <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />
-                </div>
+            </div>
+            <div className="d-flex justify-content-end mb-3 mt-1">
+                <h6>Total: {getTotal()}</h6>
+            </div>
+            <div className="row my-2 p-2">
+                <h6>Coste de Fabricación por Envase</h6>
+                <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
+                <h6>Venta al Cliente por envace</h6>
+                <Input type="number" min={1} value={venta} onChange={(e) => setVenta(e)} />
+                <h6>Ganancia</h6>
+                <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(venta === 0 || envases === 0) ? 0 : (venta < (getTotal() / envases)) ? '0' : parseFloat(venta - (getTotal() / envases)).toFixed(2)}</label></strong>
+            </div>
+            <div className="d-flex justify-content-end my-2">
+                <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />
             </div>
         </>
     )
-
 }
 
-export default withRouter(CapsulaPolvo)
+export default withRouter(CapsulaDura)

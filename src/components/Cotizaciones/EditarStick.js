@@ -3,34 +3,29 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useMutation } from '@apollo/react-hooks'
 import { UPDATE_COTIZACION } from '../../services/CotizacionService'
-import { Notification, Table, Input, InputPicker } from 'rsuite';
+import { Notification, Table, Input } from 'rsuite';
 import Boton from '../shared/Boton';
 const { Column, HeaderCell, Cell } = Table;
 
-const CapsulaPolvo = ({ ...props }) => {
-    const { formula, cliente, producto, objeto } = props
+const EditarStick = ({...props}) => {
     const [actualizar] = useMutation(UPDATE_COTIZACION)
+    const { formula, cliente, producto, objeto } = props
     const [cotizacion, setCotizacion] = useState(null)
     const [venta, setVenta] = useState(objeto.venta)
     const [dosis, setDosis] = useState(objeto.dosis)
-    const [serving, setServing] = useState(objeto.serving)
     const [envases, setEnvases] = useState(objeto.cant_env)
     const [etiquetas, setEtiquetas] = useState(objeto.cant_eti)
-    const [costoEnvase, setCostoEnvase] = useState(objeto.cost_env)
     const [costoEtiquetas, setCostoEtiquetas] = useState(objeto.cost_eti)
     const [peso, setPeso] = useState(objeto.peso)
-
+    
     useEffect(() => {
         setVenta(objeto.venta)
         setPeso(objeto.peso)
-        setDosis(objeto.dosis)
         setEnvases(objeto.cant_env)
         setEtiquetas(objeto.cant_eti)
-        setServing(objeto.serving)
-        setCostoEnvase(objeto.cost_env)
         setCostoEtiquetas(objeto.cost_eti)
+        setDosis(objeto.dosis)
     }, [objeto])
-    
 
     if (formula !== null && cotizacion === null) {
         const datos = []
@@ -45,35 +40,28 @@ const CapsulaPolvo = ({ ...props }) => {
     }
 
     const getGramosScoop = (porcentaje) => {
-        if (dosis > 0) {
-            return parseFloat((porcentaje * dosis) / 100).toFixed(2)
-        }
-        return 0
-    }
-
-    const getGramosTarro = (porcentaje) => {
-        if (dosis > 0 && serving > 0) {
-            return parseFloat(getGramosScoop(porcentaje) * serving).toFixed(2)
+        if (peso > 0) {
+            return parseFloat((porcentaje * peso) / 100).toFixed(2)
         }
         return 0
     }
 
     const getGramosEnvase = (porcentaje) => {
-        if (dosis > 0 && serving > 0 && envases > 0) {
-            return parseFloat(getGramosTarro(porcentaje) * envases).toFixed(2)
+        if(peso > 0 && envases > 0){
+            return parseFloat(getGramosScoop(porcentaje) * envases).toFixed(2)
         }
         return 0
     }
 
     const getKilosTotal = (porcentaje) => {
-        if (dosis > 0 && serving > 0 && envases > 0) {
-            return parseFloat((getGramosTarro(porcentaje) * envases) / 1000).toFixed(2)
+        if(peso > 0 && envases > 0){
+            return parseFloat(getGramosEnvase(porcentaje) / 1000).toFixed(2)
         }
         return 0
     }
 
     const getTotalFila = (porcentaje, precio) => {
-        if (dosis > 0 && serving > 0 && envases > 0) {
+        if(peso > 0 && envases > 0){
             return parseFloat(getKilosTotal(porcentaje) * precio).toFixed(2)
         }
         return 0
@@ -90,6 +78,70 @@ const CapsulaPolvo = ({ ...props }) => {
             }
             return parseFloat(total).toFixed(2)
         }
+    }
+
+    const getCostoEnvace = () => {
+        if (envases > 0) {
+            return parseFloat(getTotal() / envases).toFixed(2)
+        }
+        return 0
+    }
+
+    //Revisar
+    const onSaveCotizacion = async () => {
+        var input = {}
+        var ele = [], por = [], precio = []
+        cotizacion.map(item => {
+            ele.push(item.materia_prima.id)
+            por.push(item.porcentaje)
+            precio.push(item.precio_kilo)
+        })
+        input = {
+            formula: formula.id,
+            presentacion: producto.id,
+            cliente: cliente.id,
+            peso: peso,
+            elementos: ele,
+            porcentajes: por,
+            precios: precio,
+            dosis: dosis,
+            cant_env: envases,
+            cant_eti: etiquetas,
+            cost_eti: costoEtiquetas,
+            venta: venta,
+            estado: 'REGISTRADA',
+            status: 'ACTIVO'
+        }
+        console.log(input)
+        try {
+            const { data } = await actualizar({ variables: { id: objeto.id, input }, errorPolicy: 'all' })
+            const { estado, message } = data.actualizarCotizacion;
+            if (estado) {
+                Notification['success']({
+                    title: 'Guardar Cotización',
+                    duration: 5000,
+                    description: message
+                })
+                props.history.push('/cotizaciones')
+            } else {
+                Notification['error']({
+                    title: 'Guardar Cotización',
+                    duration: 5000,
+                    description: message
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            Notification['error']({
+                title: 'Guardar Cotización',
+                duration: 5000,
+                description: "Hubo un error inesperado al guardar la cotización"
+            })
+        }
+    }
+
+    const validarFormulario = () => {
+        return !formula || !cliente || !producto || !peso || !dosis || envases === 0 || etiquetas === 0 || costoEtiquetas === 0 || venta === 0 || getTotal() === 0
     }
 
     const actualizarPrecio = (data, precio) => {
@@ -138,106 +190,28 @@ const CapsulaPolvo = ({ ...props }) => {
         }
     }
 
-    const getCostoEnvace = () => {
-        if (envases > 0) {
-            return parseFloat(getTotal() / envases).toFixed(2)
-        }
-        return 0
-    }
-
-    //Revisar
-    const onSaveCotizacion = async () => {
-        var input = {}
-        var ele = [], por = [], precio = []
-        cotizacion.map(item => {
-            ele.push(item.materia_prima.id)
-            por.push(item.porcentaje)
-            precio.push(item.precio_kilo)
-        })
-        input = {
-            formula: formula.id,
-            presentacion: producto.id,
-            cliente: cliente.id,
-            peso: peso,
-            elementos: ele,
-            porcentajes: por,
-            precios: precio,
-            dosis: dosis,
-            serving: serving,
-            cant_env: envases,
-            cost_env: costoEnvase,
-            cant_eti: etiquetas,
-            cost_eti: costoEtiquetas,
-            venta: venta,
-            estado: 'REGISTRADA',
-            status: 'ACTIVO'
-        }
-        console.log(input)
-        try {
-            const { data } = await actualizar({ variables: { id: objeto.id, input }, errorPolicy: 'all' })
-            const { estado, message } = data.actualizarCotizacion;
-            if (estado) {
-                Notification['success']({
-                    title: 'Guardar Cotización',
-                    duration: 5000,
-                    description: message
-                })
-                props.history.push('/cotizaciones')
-            } else {
-                Notification['error']({
-                    title: 'Guardar Cotización',
-                    duration: 5000,
-                    description: message
-                })
-            }
-        } catch (error) {
-            console.log(error)
-            Notification['error']({
-                title: 'Guardar Cotización',
-                duration: 5000,
-                description: "Hubo un error inesperado al guardar la cotización"
-            })
-        }
-    }
-
-    const validarFormulario = () => {
-        return !formula || !cliente || !producto || !peso || !dosis || !serving || envases === 0 || costoEnvase === 0 || etiquetas === 0 || costoEtiquetas === 0 || venta === 0 || getTotal() === 0
-    }
-    //Revisar
-
     return (
         <>
             <h5>Parámetros específicos de la cotización</h5>
             <div className="row my-2">
                 <div className="col-md-6">
-                    <h6>Dosis: Gramos por Scoop</h6>
+                    <h6>Dosis</h6>
                     <Input type="number" min={1} value={dosis} onChange={(e) => setDosis(e)} />
                     <h6>Total de envases</h6>
                     <Input type="number" min={1} value={envases} onChange={(e) => setEnvases(e)} />
-                    <h6>Total de etiquetas</h6>
+                    <h6>Total de Empaques</h6>
                     <Input type="number" min={1} value={etiquetas} onChange={(e) => setEtiquetas(e)} />
                 </div>
                 <div className="col-md-6">
-                    <h6>Serving</h6>
-                    <Input type="number" min={1} value={serving} onChange={(e) => setServing(e)} />
-                    <h6>Costo por envase</h6>
-                    <Input type="number" min={1} value={costoEnvase} onChange={(e) => setCostoEnvase(e)} />
-                    <h6>Costo por etiqueta</h6>
+                    <div style={{height: 60}}></div>
+                    <div style={{height: 60}}></div>
+                    <h6>Costo por Empaque</h6>
                     <Input type="number" min={1} value={costoEtiquetas} onChange={(e) => setCostoEtiquetas(e)} />
                 </div>
             </div>
             <div className="w-50 mx-auto">
-                <h6>Cantidad de Polvo</h6>
-                <InputPicker cleanable={false} className="rounded-0 w-100" size="md" placeholder="Cantidad de Polvo" searchable={true} value={peso} onChange={(e) => setPeso(e)}
-                    data={[
-                        { 'label': '300gr', 'value': '300' },
-                        { 'label': '400gr', 'value': '400' },
-                        { 'label': '500gr', 'value': '500' },
-                        { 'label': '2lb', 'value': '900' },
-                        { 'label': '5lb', 'value': '2270' },
-                        { 'label': '10lb', 'value': '4540' }
-                    ]}
-                />
+                <h6>Cantidad del producto</h6>
+                <Input type="number" searchable={true} value={peso} onChange={(e) => setPeso(e)}/>
             </div>
             <h5>Elementos de la formula</h5>
             <div>
@@ -262,16 +236,6 @@ const CapsulaPolvo = ({ ...props }) => {
                             {
                                 rowData => {
                                     return (<label>{getGramosScoop(rowData.porcentaje)}</label>)
-                                }
-                            }
-                        </Cell>
-                    </Column>
-                    <Column flexGrow={1}>
-                        <HeaderCell>GR / Tarro</HeaderCell>
-                        <Cell>
-                            {
-                                rowData => {
-                                    return (<label>{getGramosTarro(rowData.porcentaje)}</label>)
                                 }
                             }
                         </Cell>
@@ -337,4 +301,4 @@ const CapsulaPolvo = ({ ...props }) => {
 
 }
 
-export default withRouter(CapsulaPolvo)
+export default withRouter(EditarStick)

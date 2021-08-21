@@ -1,21 +1,9 @@
 import React, { useState } from 'react';
 import { Table } from 'rsuite';
 import Action from '../shared/Action';
-const { Column, HeaderCell, Cell, Pagination } = Table;
+const { Column, HeaderCell, Cell } = Table;
 
 const List = (props) => {
-
-    const [page, setPage] = useState(1);
-    const [displayLength, setDisplayLength] = useState(5);
-
-    const handleChangePage = (dataKey) => {
-        setPage(dataKey)
-    }
-
-    const handleChangeLength = (dataKey) => {
-        setPage(1);
-        setDisplayLength(dataKey);
-    }
 
     const onDelete = (correo) => {
         var index = null;
@@ -34,7 +22,7 @@ const List = (props) => {
     const { data, edit, borrar, estilos } = props;
     return (
         <div className="p-0">
-            <Table className={estilos} style={{maxHeight: 270, minHeight: 270}} data={data}>
+            <Table className={estilos} height={200} data={data}>
                 {(edit && borrar) ?
                     (
                         <Column width={300}>
@@ -72,21 +60,6 @@ const List = (props) => {
                     </Column>
                 }
             </Table>
-            { (data.length > 5) &&
-                < Pagination className={estilos}
-                    first={false}
-                    last={false}
-                    next={false}
-                    prev={false}
-                    showInfo={false}
-                    showLengthMenu={false}
-                    activePage={page}
-                    displayLength={displayLength}
-                    total={data.length}
-                    onChangePage={handleChangePage}
-                    onChangeLength={handleChangeLength}
-                />
-            }
         </div>
     );
 
