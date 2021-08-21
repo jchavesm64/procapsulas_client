@@ -23,6 +23,8 @@ const CambiarClave = ({ props, usuario }) => {
     const [confirmar, setConfirmar] = useState('');
     const [cambiar] = useMutation(CAMBIAR_CLAVE);
 
+    console.log(props)
+
     const actualizarClave = async (cliente) => {
         if(nueva === confirmar){
             const {data} = await cambiar({variables: {id: usuario.id, actual, nueva}});

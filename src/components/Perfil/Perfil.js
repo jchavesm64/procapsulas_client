@@ -42,7 +42,7 @@ const Perfil = ({ ...props }) => {
                         </div>
                         {(active === 'info') ? <Info usuario={data} /> : ''}
                         {(active === 'editar') ? <Editar props={props} usuario={data} perfil={true} /> : ''}
-                        {(active === 'password') ? <Clave usuario={data} /> : ''}
+                        {(active === 'password') ? <Clave props={props} usuario={data} /> : ''}
                     </div>
                 ) : (
                     <Redirect to='/login' />
