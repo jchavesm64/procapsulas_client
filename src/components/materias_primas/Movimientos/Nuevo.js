@@ -100,7 +100,7 @@ const NuevoMovimiento = (props) => {
             <div className="row my-1">
                 <div className="col-md-6">
                     <h6 className="my-1">Lote</h6>
-                    <Input type="number" placeholder="Lote" value={lote} onChange={(e) => setLote(e)} />
+                    <Input type="text" placeholder="Lote" value={lote} onChange={(e) => setLote(e)} />
                 </div>
                 <div className="col-md-6">
                     <h6 className="my-1">Código</h6>

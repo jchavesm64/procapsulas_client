@@ -15,7 +15,7 @@ const List = (props) => {
         }
         if(index != null){
             data.splice(index, 1);
-            props.setRefrescar(true);
+            props.setRefrescar(!props.refrescar);
         }
     }
 

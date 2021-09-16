@@ -120,16 +120,16 @@ const FormularioCliente = ({ props, cliente }) => {
     }
 
     const agregarTelefono = (telefono) => {
-        if (code !== "") {
+        if (pais) {
             var band = false;
             telefonos.map(t => {
-                if (code + ' ' + t.telefono === telefono) {
+                if (pais.code + ' ' + t.telefono === telefono) {
                     band = true;
                 }
             })
             if (!band) {
                 telefonos.push({
-                    "telefono": code + ' ' + telefono
+                    "telefono": pais.code + ' ' + telefono
                 })
                 document.getElementById('telefono').value = "";
                 setRefrescar(!refrescar);
@@ -338,7 +338,7 @@ const FormularioCliente = ({ props, cliente }) => {
                     <div>
                         <div style={{ margin: 0, padding: 0 }} className="row mt-3">
                             <div className="col-md-6 d-inline-block">
-                                <List estilos="w-90 mx-auto" data={telefonos} clave="telefono" header="Teleonos" edit={false} borrar={true} setRefrescar={setRefrescar} />
+                                <List estilos="w-90 mx-auto" data={telefonos} clave="telefono" header="Teléfonos" edit={false} borrar={true} setRefrescar={setRefrescar} refrescar={refrescar}/>
                                 <div className="input-group mt-3 mb-3 w-90 mx-auto">
                                     {props.uso === true &&
                                         <InputGroup className="mx-auto w-90 btn-outline-light mb-2">
@@ -346,7 +346,7 @@ const FormularioCliente = ({ props, cliente }) => {
                                                 <Icon icon="phone" />
                                             </InputGroup.Addon>
                                             <InputPicker className="h-100 rounded-0" size="md" placeholder="Area" data={getCodes()} value={pais ? pais.code : ''} searchable={true} onChange={(e) => setCode(e)} />
-                                            <input id="telefono" type="number" placeholder="Numero de telefono" className="rounded-0 form-control" />
+                                            <input id="telefono" type="number" placeholder="Numero de teléfono" className="rounded-0 form-control" />
                                             <Boton className="rounded-0 h-100" icon="save" color="green" onClick={() => agregarTelefono(document.getElementById('telefono').value)} tooltip="Agregar Telefono" />
                                         </InputGroup>
                                     }

@@ -32,30 +32,38 @@ const Stick = ({...props}) => {
 
     const getGramosScoop = (porcentaje) => {
         if (peso > 0) {
-            return parseFloat((porcentaje * peso) / 100).toFixed(2)
+            return parseFloat((porcentaje * peso) / 100).toFixed(4)
         }
         return 0
     }
 
     const getGramosEnvase = (porcentaje) => {
         if(peso > 0 && envases > 0){
-            return parseFloat(getGramosScoop(porcentaje) * envases).toFixed(2)
+            return parseFloat(getGramosScoop(porcentaje) * envases).toFixed(4)
         }
         return 0
     }
 
     const getKilosTotal = (porcentaje) => {
         if(peso > 0 && envases > 0){
-            return parseFloat(getGramosEnvase(porcentaje) / 1000).toFixed(2)
+            return parseFloat(getGramosEnvase(porcentaje) / 1000).toFixed(4)
         }
         return 0
     }
 
     const getTotalFila = (porcentaje, precio) => {
         if(peso > 0 && envases > 0){
-            return parseFloat(getKilosTotal(porcentaje) * precio).toFixed(2)
+            return parseFloat(getKilosTotal(porcentaje) * precio).toFixed(4)
         }
         return 0
+    }
+
+    const getTotalTabla = () => {
+        var total = 0;
+        cotizacion.map(item => {
+            total += parseFloat(getTotalFila(item))
+        })
+        return total
     }
 
     const getTotal = () => {
@@ -67,13 +75,14 @@ const Stick = ({...props}) => {
                     total += parseFloat(getTotalFila(item.porcentaje, item.precio_kilo))
                 }
             }
-            return parseFloat(total).toFixed(2)
+            total += parseFloat(etiquetas * costoEtiquetas)
+            return parseFloat(total).toFixed(4)
         }
     }
 
     const getCostoEnvace = () => {
         if (envases > 0) {
-            return parseFloat(getTotal() / envases).toFixed(2)
+            return parseFloat(getTotal() / envases).toFixed(4)
         }
         return 0
     }
@@ -144,7 +153,7 @@ const Stick = ({...props}) => {
                         newDatos.push({
                             materia_prima: item.materia_prima,
                             porcentaje: item.porcentaje,
-                            precio_kilo: parseFloat(precio).toFixed(2)
+                            precio_kilo: parseFloat(precio).toFixed(4)
                         })
                     } else {
                         newDatos.push(item)
@@ -278,10 +287,10 @@ const Stick = ({...props}) => {
                 <div className="row my-2 p-2">
                     <h6>Coste de Fabricación por Envase</h6>
                     <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
-                    <h6>Venta al Cliente por envace</h6>
+                    <h6>Venta al Cliente por Envase</h6>
                     <Input type="number" min={1} value={venta} onChange={(e) => setVenta(e)} />
                     <h6>Ganancia</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(venta === 0 || envases === 0) ? 0 : (venta < (getTotal() / envases)) ? '0' : parseFloat(venta - (getTotal() / envases)).toFixed(2)}</label></strong>
+                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(venta === 0 || envases === 0) ? 0 : (venta < (getTotal() / envases)) ? '0' : parseFloat(venta - (getTotal() / envases)).toFixed(4)}</label></strong>
                 </div>
                 <div className="d-flex justify-content-end my-2">
                     <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />

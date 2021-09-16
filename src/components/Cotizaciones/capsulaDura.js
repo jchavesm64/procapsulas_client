@@ -34,35 +34,35 @@ const CapsulaDura = ({ ...props }) => {
 
     const getMiligramosCapsula = (porcentaje) => {
         if (peso > 0) {
-            return parseFloat((porcentaje * peso) / 100).toFixed(2)
+            return parseFloat((porcentaje * peso) / 100).toFixed(4)
         }
         return 0
     }
 
     const getGramosCapsula = (porcentaje) => {
         if (peso > 0) {
-            return parseFloat(getMiligramosCapsula(porcentaje) / 1000).toFixed(2);
+            return parseFloat(getMiligramosCapsula(porcentaje) / 1000).toFixed(4);
         }
         return 0
     }
 
     const getGramosEnvase = (porcentaje) => {
         if (peso > 0 && cantidad > 0) {
-            return parseFloat((getMiligramosCapsula(porcentaje) / 1000) * cantidad).toFixed(2);
+            return parseFloat((getMiligramosCapsula(porcentaje) / 1000) * cantidad).toFixed(4);
         }
         return 0
     }
 
     const getGramosTotal = (porcentaje) => {
         if (peso > 0 && cantidad > 0 && envases > 0) {
-            return parseFloat(((getMiligramosCapsula(porcentaje) / 1000) * cantidad) * envases).toFixed(2);
+            return parseFloat(((getMiligramosCapsula(porcentaje) / 1000) * cantidad) * envases).toFixed(4);
         }
         return 0
     }
 
     const getKilos = (porcentaje) => {
         if (peso > 0 && cantidad > 0 && envases > 0) {
-            return parseFloat((((getMiligramosCapsula(porcentaje) / 1000) * cantidad) * envases) / 1000).toFixed(2);
+            return parseFloat((((getMiligramosCapsula(porcentaje) / 1000) * cantidad) * envases) / 1000).toFixed(4);
         }
         return 0
     }
@@ -76,7 +76,7 @@ const CapsulaDura = ({ ...props }) => {
                         newDatos.push({
                             materia_prima: item.materia_prima,
                             porcentaje: item.porcentaje,
-                            precio_kilo: parseFloat(precio).toFixed(2)
+                            precio_kilo: parseFloat(precio).toFixed(4)
                         })
                     } else {
                         newDatos.push(item)
@@ -115,7 +115,7 @@ const CapsulaDura = ({ ...props }) => {
 
     const getTotalFila = (data) => {
         if (peso > 0 && cantidad > 0 && envases > 0) {
-            return parseFloat(getKilos(data.porcentaje) * data.precio_kilo).toFixed(2)
+            return parseFloat(getKilos(data.porcentaje) * data.precio_kilo).toFixed(4)
         }
         return 0
     }
@@ -129,7 +129,7 @@ const CapsulaDura = ({ ...props }) => {
             total += parseFloat(costoCapsula * cantidad)
             total += parseFloat(costoEnvase * envases)
             total += parseFloat(costoEtiquetas * etiquetas)
-            return parseFloat(total).toFixed(2)
+            return parseFloat(total).toFixed(4)
         }
         return 0
     }
@@ -202,7 +202,7 @@ const CapsulaDura = ({ ...props }) => {
 
     const getCostoEnvace = () => {
         if (envases > 0) {
-            return parseFloat(getTotal() / envases).toFixed(2)
+            return parseFloat(getTotal() / envases).toFixed(4)
         }
         return 0
     }
@@ -220,7 +220,7 @@ const CapsulaDura = ({ ...props }) => {
                     <Input type="number" min={1} value={etiquetas} onChange={(e) => setEtiquetas(e)} />
                 </div>
                 <div className="col-md-6">
-                    <h6> Costo por Cápsula</h6>
+                    <h6> Costo por Cápsula Vacía</h6>
                     <Input type="number" min={1} value={costoCapsula} onChange={(e) => setCostoCapsula(e)} />
                     <h6>Costo por envase</h6>
                     <Input type="number" min={1} value={costoEnvase} onChange={(e) => setCostoEnvase(e)} />
@@ -327,10 +327,10 @@ const CapsulaDura = ({ ...props }) => {
             <div className="row my-2 p-2">
                 <h6>Coste de Fabricación por Envase</h6>
                 <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
-                <h6>Venta al Cliente por envace</h6>
+                <h6>Venta al Cliente por Envase</h6>
                 <Input type="number" min={1} value={venta} onChange={(e) => setVenta(e)} />
                 <h6>Ganancia</h6>
-                <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(venta === 0 || envases === 0) ? 0 : (venta < (getTotal() / envases)) ? '0' : parseFloat(venta - (getTotal() / envases)).toFixed(2)}</label></strong>
+                <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(venta === 0 || envases === 0) ? 0 : (venta < (getTotal() / envases)) ? '0' : parseFloat(venta - (getTotal() / envases)).toFixed(4)}</label></strong>
             </div>
             <div className="d-flex justify-content-end my-2">
                 <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />

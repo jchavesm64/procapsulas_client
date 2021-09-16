@@ -27,10 +27,18 @@ const CardClientes = ({ ...props }) => {
                 <Label icon="globe" value={cliente.pais} />
                 <h6>Estado o Provincia</h6>
                 <Label icon="bank" value={cliente.ciudad} />
-                <h6>Correo</h6>
-                <Label icon="at" value={cliente.correos[0].email} />
-                <h6>Telefono</h6>
-                <Label icon="phone" value={cliente.telefonos[0].telefono} />
+                {cliente.correo &&
+                    <>
+                        <h6>Correo</h6>
+                        <Label icon="at" value={cliente.correos[0].email} />
+                    </>
+                }
+                {cliente.telefono &&
+                    <>
+                        <h6>Teléfono</h6>
+                        <Label icon="phone" value={cliente.telefonos[0].telefono} />
+                    </>
+                }
                 {cliente.redes.length > 0 &&
                     <>
                         <h6>Redes Sociales</h6>

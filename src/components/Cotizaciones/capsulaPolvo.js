@@ -34,35 +34,35 @@ const CapsulaPolvo = ({ ...props }) => {
 
     const getGramosScoop = (porcentaje) => {
         if (dosis > 0) {
-            return parseFloat((porcentaje * dosis) / 100).toFixed(2)
+            return parseFloat((porcentaje * dosis) / 100).toFixed(4)
         }
         return 0
     }
 
     const getGramosTarro = (porcentaje) => {
         if (dosis > 0 && serving > 0) {
-            return parseFloat(getGramosScoop(porcentaje) * serving).toFixed(2)
+            return parseFloat(getGramosScoop(porcentaje) * serving).toFixed(4)
         }
         return 0
     }
 
     const getGramosEnvase = (porcentaje) => {
         if (dosis > 0 && serving > 0 && envases > 0) {
-            return parseFloat(getGramosTarro(porcentaje) * envases).toFixed(2)
+            return parseFloat(getGramosTarro(porcentaje) * envases).toFixed(4)
         }
         return 0
     }
 
     const getKilosTotal = (porcentaje) => {
         if (dosis > 0 && serving > 0 && envases > 0) {
-            return parseFloat((getGramosTarro(porcentaje) * envases) / 1000).toFixed(2)
+            return parseFloat((getGramosTarro(porcentaje) * envases) / 1000).toFixed(4)
         }
         return 0
     }
 
     const getTotalFila = (porcentaje, precio) => {
         if (dosis > 0 && serving > 0 && envases > 0) {
-            return parseFloat(getKilosTotal(porcentaje) * precio).toFixed(2)
+            return parseFloat(getKilosTotal(porcentaje) * precio).toFixed(4)
         }
         return 0
     }
@@ -76,7 +76,9 @@ const CapsulaPolvo = ({ ...props }) => {
                     total += parseFloat(getTotalFila(item.porcentaje, item.precio_kilo))
                 }
             }
-            return parseFloat(total).toFixed(2)
+            total += parseFloat(envases * costoEnvase)
+            total += parseFloat(etiquetas * costoEtiquetas)
+            return parseFloat(total).toFixed(4)
         }
     }
 
@@ -89,7 +91,7 @@ const CapsulaPolvo = ({ ...props }) => {
                         newDatos.push({
                             materia_prima: item.materia_prima,
                             porcentaje: item.porcentaje,
-                            precio_kilo: parseFloat(precio).toFixed(2)
+                            precio_kilo: parseFloat(precio).toFixed(4)
                         })
                     } else {
                         newDatos.push(item)
@@ -128,7 +130,7 @@ const CapsulaPolvo = ({ ...props }) => {
 
     const getCostoEnvace = () => {
         if (envases > 0) {
-            return parseFloat(getTotal() / envases).toFixed(2)
+            return parseFloat(getTotal() / envases).toFixed(4)
         }
         return 0
     }
@@ -208,7 +210,7 @@ const CapsulaPolvo = ({ ...props }) => {
                 <div className="col-md-6">
                     <h6>Serving</h6>
                     <Input type="number" min={1} value={serving} onChange={(e) => setServing(e)} />
-                    <h6>Costo por envase</h6>
+                    <h6>Costo por Envase</h6>
                     <Input type="number" min={1} value={costoEnvase} onChange={(e) => setCostoEnvase(e)} />
                     <h6>Costo por etiqueta</h6>
                     <Input type="number" min={1} value={costoEtiquetas} onChange={(e) => setCostoEtiquetas(e)} />
@@ -314,7 +316,7 @@ const CapsulaPolvo = ({ ...props }) => {
                     <h6>Venta al Cliente por envace</h6>
                     <Input type="number" min={1} value={venta} onChange={(e) => setVenta(e)} />
                     <h6>Ganancia</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(venta === 0 || envases === 0) ? 0 : (venta < (getTotal() / envases)) ? '0' : parseFloat(venta - (getTotal() / envases)).toFixed(2)}</label></strong>
+                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(venta === 0 || envases === 0) ? 0 : (venta < (getTotal() / envases)) ? '0' : parseFloat(venta - (getTotal() / envases)).toFixed(4)}</label></strong>
                 </div>
                 <div className="d-flex justify-content-end my-2">
                     <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />
