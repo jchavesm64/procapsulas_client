@@ -16,6 +16,7 @@ const Stick = ({...props}) => {
     const [etiquetas, setEtiquetas] = useState(0)
     const [costoEtiquetas, setCostoEtiquetas] = useState(0)
     const [peso, setPeso] = useState(0)
+    const [utilidad, setUtilidad] = useState(0);
     const { formula, cliente, producto } = props
 
     if (formula !== null && cotizacion === null) {
@@ -108,7 +109,7 @@ const Stick = ({...props}) => {
             cant_env: envases,
             cant_eti: etiquetas,
             cost_eti: costoEtiquetas,
-            venta: venta,
+            venta: ((getTotal()/envases) + (((getTotal()/envases)*utilidad)/100)),
             estado: 'REGISTRADA',
             status: 'ACTIVO'
         }
@@ -141,7 +142,7 @@ const Stick = ({...props}) => {
     }
 
     const validarFormulario = () => {
-        return !formula || !cliente || !producto || !peso || !dosis || envases === 0 || etiquetas === 0 || costoEtiquetas === 0 || venta === 0 || getTotal() === 0
+        return !formula || !cliente || !producto || !peso || !dosis || envases === 0 || etiquetas === 0 || costoEtiquetas === 0 || utilidad === 0 || getTotal() === 0
     }
 
     const actualizarPrecio = (data, precio) => {
@@ -287,10 +288,12 @@ const Stick = ({...props}) => {
                 <div className="row my-2 p-2">
                     <h6>Coste de Fabricación por Envase</h6>
                     <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
-                    <h6>Venta al Cliente por Envase</h6>
-                    <Input type="number" min={1} value={venta} onChange={(e) => setVenta(e)} />
+                    <h6>Porcentaje de Ganancia por Envase</h6>
+                    <Input type="number" min={1} value={utilidad} onChange={(e) => setUtilidad(e)} />
                     <h6>Ganancia</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(venta === 0 || envases === 0) ? 0 : (venta < (getTotal() / envases)) ? '0' : parseFloat(venta - (getTotal() / envases)).toFixed(4)}</label></strong>
+                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases)*utilidad)/100).toFixed(4)}</label></strong>
+                    <h6>Venta</h6>
+                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((getTotal()/envases) + (((getTotal()/envases)*utilidad)/100)).toFixed(4)}</label></strong>
                 </div>
                 <div className="d-flex justify-content-end my-2">
                     <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />

@@ -55,3 +55,13 @@ export const PRODUCCION = gql`
         }
     }
 `;
+
+export const UPLOAD_FILE_COA = gql`
+    mutation subirArchivoCOA($file:Upload){
+        subirArchivoCOA(file:$file){
+            estado
+            filename
+            message
+        }
+    }
+`;

@@ -109,21 +109,30 @@ const Cotizaciones = ({ ...props }) => {
     }
 
     function crearItems(datos) {
+        var cant = 0;
         var items = []
         for (let i = 0; i < datos.elementos.length; i++) {
+            if(datos.presentacion.tipo === 'Cápsula dura' || datos.presentacion.tipo === 'Cápsula blanda'){
+                cant = ((((((parseFloat(datos.peso) * datos.porcentajes[i]) / 100) / 1000) * parseFloat(datos.cant_cap)) * parseFloat(datos.cant_env)) / 1000)
+            }else if(datos.presentacion.tipo === 'Polvo'){
+                cant = (((((parseFloat(datos.dosis) * datos.porcentajes[i]) / 100) / 1000) * parseFloat(datos.serving)) * parseFloat(datos.cant_env))
+            }else{
+                cant = (((parseFloat(datos.peso) * datos.porcentajes[i])/100)/1000) * datos.cant_env
+            }
             items.push({
                 id: datos.elementos[i].id,
                 nombre: datos.elementos[i].nombre,
-                cantidad: ((((((parseFloat(datos.pesoCapsula) * datos.porcentajes[i]) / 100) / 1000) * parseFloat(datos.cantidad)) * parseFloat(datos.envases)) / 1000)
+                cantidad: parseFloat(cant.toFixed(4))
             })
         }
         for (let i = 0; i < datos.elementos_c.length; i++) {
             items.push({
-                id: datos.capsula[i].id,
+                id: datos.elementos_c[i].id,
                 nombre: datos.elementos_c[i].nombre,
                 cantidad: datos.cantidad_c[i]
             })
         }
+        console.log(items)
         return items
     }
 
@@ -160,13 +169,21 @@ const Cotizaciones = ({ ...props }) => {
     }
 
     const enviarProduccion = async (datos) => {
+        var cant = 0;
         if (datos.estado !== 'ENVIADA') {
             if (verificarExistencias(datos, false)) {
                 var items = []
                 for (let i = 0; i < datos.elementos.length; i++) {
+                    if(datos.presentacion.tipo === 'Cápsula dura' || datos.presentacion.tipo === 'Cápsula blanda'){
+                        cant = ((((((parseFloat(datos.peso) * datos.porcentajes[i]) / 100) / 1000) * parseFloat(datos.cant_cap)) * parseFloat(datos.cant_env)) / 1000)
+                    }else if(datos.presentacion.tipo === 'Polvo'){
+                        cant = (((((parseFloat(datos.dosis) * datos.porcentajes[i]) / 100) / 1000) * parseFloat(datos.serving)) * parseFloat(datos.cant_env))
+                    }else{
+                        cant = (((parseFloat(datos.peso) * datos.porcentajes[i])/100)/1000) * datos.cant_env
+                    }
                     items.push({
                         id: datos.elementos[i].id,
-                        cantidad: ((((((parseFloat(datos.peso) * datos.porcentajes[i]) / 100) / 1000) * parseFloat(datos.cant_cap)) * parseFloat(datos.cant_env)) / 1000)
+                        cantidad: cant
                     })
                 }
                 for (let i = 0; i < datos.elementos_c.length; i++) {

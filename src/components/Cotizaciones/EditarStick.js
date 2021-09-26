@@ -7,7 +7,7 @@ import { Notification, Table, Input } from 'rsuite';
 import Boton from '../shared/Boton';
 const { Column, HeaderCell, Cell } = Table;
 
-const EditarStick = ({...props}) => {
+const EditarStick = ({ ...props }) => {
     const [actualizar] = useMutation(UPDATE_COTIZACION)
     const { formula, cliente, producto, objeto } = props
     const [cotizacion, setCotizacion] = useState(null)
@@ -17,8 +17,10 @@ const EditarStick = ({...props}) => {
     const [etiquetas, setEtiquetas] = useState(objeto.cant_eti)
     const [costoEtiquetas, setCostoEtiquetas] = useState(objeto.cost_eti)
     const [peso, setPeso] = useState(objeto.peso)
-    
+    const [utilidad, setUtilidad] = useState({ utilidad: 0, validada: false });
+
     useEffect(() => {
+        setUtilidad({ utilidad: 0, validada: false })
         setVenta(objeto.venta)
         setPeso(objeto.peso)
         setEnvases(objeto.cant_env)
@@ -47,21 +49,21 @@ const EditarStick = ({...props}) => {
     }
 
     const getGramosEnvase = (porcentaje) => {
-        if(peso > 0 && envases > 0){
+        if (peso > 0 && envases > 0) {
             return parseFloat(getGramosScoop(porcentaje) * envases).toFixed(4)
         }
         return 0
     }
 
     const getKilosTotal = (porcentaje) => {
-        if(peso > 0 && envases > 0){
+        if (peso > 0 && envases > 0) {
             return parseFloat(getGramosEnvase(porcentaje) / 1000).toFixed(4)
         }
         return 0
     }
 
     const getTotalFila = (porcentaje, precio) => {
-        if(peso > 0 && envases > 0){
+        if (peso > 0 && envases > 0) {
             return parseFloat(getKilosTotal(porcentaje) * precio).toFixed(4)
         }
         return 0
@@ -109,7 +111,7 @@ const EditarStick = ({...props}) => {
             cant_env: envases,
             cant_eti: etiquetas,
             cost_eti: costoEtiquetas,
-            venta: venta,
+            venta: ((getTotal() / envases) + (((getTotal() / envases) * utilidad.utilidad) / 100)),
             estado: 'REGISTRADA',
             status: 'ACTIVO'
         }
@@ -142,7 +144,7 @@ const EditarStick = ({...props}) => {
     }
 
     const validarFormulario = () => {
-        return !formula || !cliente || !producto || !peso || !dosis || envases === 0 || etiquetas === 0 || costoEtiquetas === 0 || venta === 0 || getTotal() === 0
+        return !formula || !cliente || !producto || !peso || !dosis || envases === 0 || etiquetas === 0 || costoEtiquetas === 0 || utilidad === 0 || getTotal() === 0
     }
 
     const actualizarPrecio = (data, precio) => {
@@ -191,6 +193,15 @@ const EditarStick = ({...props}) => {
         }
     }
 
+    if (cotizacion === null) {
+        setUtilidad({ utilidad: 0, validada: false });
+    } else if (utilidad.validada === false) {
+        var v = venta, uti = 0;
+        v -= (getTotal() / envases);
+        uti = (v * 100) / (getTotal() / envases);
+        setUtilidad({ utilidad: uti.toFixed(4), validada: true })
+    }
+
     return (
         <>
             <h5>Parámetros específicos de la cotización</h5>
@@ -204,15 +215,15 @@ const EditarStick = ({...props}) => {
                     <Input type="number" min={1} value={etiquetas} onChange={(e) => setEtiquetas(e)} />
                 </div>
                 <div className="col-md-6">
-                    <div style={{height: 60}}></div>
-                    <div style={{height: 60}}></div>
+                    <div style={{ height: 60 }}></div>
+                    <div style={{ height: 60 }}></div>
                     <h6>Costo por Empaque</h6>
                     <Input type="number" min={1} value={costoEtiquetas} onChange={(e) => setCostoEtiquetas(e)} />
                 </div>
             </div>
             <div className="w-50 mx-auto">
                 <h6>Cantidad del producto</h6>
-                <Input type="number" searchable={true} value={peso} onChange={(e) => setPeso(e)}/>
+                <Input type="number" searchable={true} value={peso} onChange={(e) => setPeso(e)} />
             </div>
             <h5>Elementos de la formula</h5>
             <div>
@@ -288,14 +299,18 @@ const EditarStick = ({...props}) => {
                 <div className="row my-2 p-2">
                     <h6>Coste de Fabricación por Envase</h6>
                     <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
-                    <h6>Venta al Cliente por Envase</h6>
-                    <Input type="number" min={1} value={venta} onChange={(e) => setVenta(e)} />
+                    <h6>Porcentaje de Ganancia por Envase</h6>
+                    <Input type="number" value={utilidad.utilidad} onChange={(e) => setUtilidad({ utilidad: e, validada: utilidad.validada })} />
                     <h6>Ganancia</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(venta === 0 || envases === 0) ? 0 : (venta < (getTotal() / envases)) ? '0' : parseFloat(venta - (getTotal() / envases)).toFixed(4)}</label></strong>
+                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases) * utilidad.utilidad) / 100).toFixed(4)}</label></strong>
+                    <h6>Venta</h6>
+                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((getTotal() / envases) + (((getTotal() / envases) * utilidad.utilidad) / 100)).toFixed(4)}</label></strong>
                 </div>
-                <div className="d-flex justify-content-end my-2">
-                    <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />
-                </div>
+                {objeto.estado === 'REGISTRADA' &&
+                    <div className="d-flex justify-content-end my-2">
+                        <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />
+                    </div>
+                }
             </div>
         </>
     )

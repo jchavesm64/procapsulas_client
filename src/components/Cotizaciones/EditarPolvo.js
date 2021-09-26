@@ -18,9 +18,11 @@ const CapsulaPolvo = ({ ...props }) => {
     const [etiquetas, setEtiquetas] = useState(objeto.cant_eti)
     const [costoEnvase, setCostoEnvase] = useState(objeto.cost_env)
     const [costoEtiquetas, setCostoEtiquetas] = useState(objeto.cost_eti)
+    const [utilidad, setUtilidad] = useState({utilidad: 0, validada: false});
     const [peso, setPeso] = useState(objeto.peso)
 
     useEffect(() => {
+        setUtilidad({utilidad: 0, validada: false})
         setVenta(objeto.venta)
         setPeso(objeto.peso)
         setDosis(objeto.dosis)
@@ -168,7 +170,7 @@ const CapsulaPolvo = ({ ...props }) => {
             cost_env: costoEnvase,
             cant_eti: etiquetas,
             cost_eti: costoEtiquetas,
-            venta: venta,
+            venta: ((getTotal()/envases) + (((getTotal()/envases)*utilidad.utilidad)/100)),
             estado: 'REGISTRADA',
             status: 'ACTIVO'
         }
@@ -201,9 +203,17 @@ const CapsulaPolvo = ({ ...props }) => {
     }
 
     const validarFormulario = () => {
-        return !formula || !cliente || !producto || !peso || !dosis || !serving || envases === 0 || costoEnvase === 0 || etiquetas === 0 || costoEtiquetas === 0 || venta === 0 || getTotal() === 0
+        return !formula || !cliente || !producto || !peso || !dosis || !serving || envases === 0 || costoEnvase === 0 || etiquetas === 0 || costoEtiquetas === 0 || utilidad === 0 || getTotal() === 0
     }
     //Revisar
+    if (cotizacion === null){
+        setUtilidad({utilidad: 0, validada: false});
+    } else if (utilidad.validada === false){
+        var v = venta, uti = 0;
+        v -= (getTotal()/envases);
+        uti = (v*100)/(getTotal()/envases);
+        setUtilidad({utilidad: uti.toFixed(4), validada: true})
+    }
 
     return (
         <>
@@ -323,14 +333,18 @@ const CapsulaPolvo = ({ ...props }) => {
                 <div className="row my-2 p-2">
                     <h6>Coste de Fabricación por Envase</h6>
                     <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
-                    <h6>Venta al Cliente por envace</h6>
-                    <Input type="number" min={1} value={venta} onChange={(e) => setVenta(e)} />
+                    <h6>Porcentaje de Ganancia por Envase</h6>
+                    <Input type="number" min={1} value={utilidad.utilidad} onChange={(e) => setUtilidad({utilidad: e, validada: utilidad.validada})} />
                     <h6>Ganancia</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(venta === 0 || envases === 0) ? 0 : (venta < (getTotal() / envases)) ? '0' : parseFloat(venta - (getTotal() / envases)).toFixed(4)}</label></strong>
+                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases)*utilidad.utilidad)/100).toFixed(4)}</label></strong>
+                    <h6>Venta</h6>
+                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((getTotal()/envases) + (((getTotal()/envases)*utilidad.utilidad)/100)).toFixed(4)}</label></strong>
                 </div>
-                <div className="d-flex justify-content-end my-2">
-                    <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />
-                </div>
+                {objeto.estado === 'REGISTRADA' &&
+                    <div className="d-flex justify-content-end my-2">
+                        <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />
+                    </div>
+                }
             </div>
         </>
     )

@@ -32,8 +32,6 @@ const CardMateria = ({ ...props }) => {
                 <Label icon="font" value={materia.materia_prima.nombre} />
                 <h6>País</h6>
                 <Label icon="globe" value={materia.materia_prima.pais} />
-                <h6>Proveedor</h6>
-                <Label icon="user" value={materia.materia_prima.proveedor.empresa} />
                 <h6>Existencias</h6>
                 <Label icon="hashtag" value={calcularMovimientos(materia.movimientos) + ' ' + materia.materia_prima.unidad} />
             </div>

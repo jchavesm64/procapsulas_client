@@ -8,11 +8,6 @@ export const OBTENER_FORMULAS = gql`
             elementos{
                 id
                 nombre
-                proveedor{
-                    id
-                    empresa
-                    cedula
-                }
                 pais
                 existencias
                 estado
