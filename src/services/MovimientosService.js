@@ -6,6 +6,11 @@ export const OBTENER_MOVIMIENTOS = gql`
             id
             tipo
             lote
+            proveedor{
+                id
+                empresa
+                cedula
+            }
             codigo
             fechaFabricacion
             fechaVencimiento
