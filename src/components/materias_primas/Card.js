@@ -39,7 +39,7 @@ const CardMateria = ({ ...props }) => {
                 <div className="mx-1"><Link to={`movimientos/${materia.materia_prima.id}/${materia.materia_prima.nombre}`}><Action tooltip="Ver movimientos" color="blue" icon="info" size="xs" /></Link></div>
                 <div className="mx-1"><Link to={`movimiento/nuevo/${materia.materia_prima.id}`}><Action tooltip="Agregar Movimiento" color="green" icon="plus" size="xs" /></Link></div>
                 <div className="mx-1"><Link to={`materias_primas/editar/${materia.materia_prima.id}`}><Action tooltip="Editar Materia Prima" color="orange" icon="edit" size="xs" /></Link></div>
-                <div className="mx-1"><Action onClick={() => { props.session.roles.some(rol => rol.tipo === localStorage.getItem('rol') && (rol.acciones[0].eliminar === true)) ? setConfirmation({ bool: true, id: materia.id }) : mostrarMsj() }} tooltip="Eliminar Materia Prima" color="red" icon="trash" size="xs" /></div>
+                <div className="mx-1"><Action onClick={() => { props.session.roles.some(rol => rol.tipo === localStorage.getItem('rol') && (rol.acciones[0].eliminar === true)) ? setConfirmation({ bool: true, id: materia.materia_prima.id }) : mostrarMsj() }} tooltip="Eliminar Materia Prima" color="red" icon="trash" size="xs" /></div>
             </div>
         </Panel>
     )
