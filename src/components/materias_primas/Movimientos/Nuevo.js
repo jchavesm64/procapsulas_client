@@ -62,7 +62,7 @@ const NuevoMovimiento = (props) => {
         var date = new Date();
         var fecha = date.getFullYear() + "-" + (((date.getMonth() + 1) < 10) ? ('0' + (date.getMonth() + 1)) : (date.getMonth() + 1)) + '-' + ((date.getDate() < 10) ? ('0' + date.getDate()) : date.getDate());
         if ((fechaFabricacion < fechaVencimiento && fechaFabricacion <= fecha) || p_correcto) {
-            if (!(cantidad < 1 || precio < 1)) {
+            if (!(cantidad <= 0 || precio <= 0)) {
                 try {
                     const input = {
                         tipo: 'ENTRADA',
