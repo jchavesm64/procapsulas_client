@@ -73,7 +73,7 @@ const CardMovimiento = ({ ...props }) => {
                 <div className="m-1 row">
                     <h6>Archivo COA</h6>
                     <div className="col-md-5 float-left bg-primary rounded py-1 my-1">
-                        <a className="text-white" href={"https://storage.cloud.google.com/bucket_pro_capsulas/archivos_coa/" + movimiento.cao} target="_blank"><Icon icon="eye" />  Ver Archivo COA</a>
+                        <a className="text-white" href={"https://storage.cloud.google.com/bucket_pro_capsulas/archivos_coa/" + movimiento.cao+"?authuser=2"} target="_blank"><Icon icon="eye" />  Ver Archivo COA</a>
                     </div>
                     <div className="col-md-2"></div>
                     {/* 
