@@ -358,7 +358,7 @@ const FormularioProveedor = ({ props, proveedor, uso }) => {
                                 </div>
                             </div>
                             <div className="col-md-6 d-inline-block">
-                                <List data={correos} clave="email" header="Correos" edit={false} borrar={true} setRefrescar={setRefrescar} />
+                                <List data={correos} clave="email" header="Correos" edit={false} borrar={true} setRefrescar={setRefrescar} refrescar={refrescar}/>
                                 <div className="input-group mt-2 w-90 mx-auto">
                                     {props.uso === false &&
                                         <InputGroup className="mx-auto w-90 btn-outline-light mb-2">

@@ -73,6 +73,7 @@ const NuevaFormula = ({ ...props }) => {
                     input = {
                         nombre,
                         elementos,
+                        cliente,
                         porcentajes,
                         estado: 'ACTIVO'
                     }
@@ -80,6 +81,7 @@ const NuevaFormula = ({ ...props }) => {
                     input = {
                         nombre,
                         elementos,
+                        cliente,
                         porcentajes,
                         formulaBase: base.id,
                         estado: 'ACTIVO'

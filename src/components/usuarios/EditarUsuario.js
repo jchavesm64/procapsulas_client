@@ -30,7 +30,7 @@ const EditarUsuario = (props) => {
 
     return (
         <>
-            <Formulario  props={props} usuario={data.obtenerUsuario} refetch={refetch} perfil={false}/>
+            <Formulario  uso={props.uso} props={props} usuario={data.obtenerUsuario} refetch={refetch} perfil={false}/>
         </>
     );
 }

@@ -87,7 +87,6 @@ const Formulas = ({ ...props }) => {
         })
     }
 
-    console.log(formulas)
     const dataFormulas = getData();
 
     return (

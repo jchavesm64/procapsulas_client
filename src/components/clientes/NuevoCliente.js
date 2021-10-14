@@ -317,7 +317,7 @@ const NuevoCliente = (props) => {
                                 </div>
                             </div>
                             <div className="col-md-6 d-inline-block">
-                                <List data={correos} clave="email" header="Correos" edit={false} borrar={true} setRefrescar={setRefrescar} />
+                                <List data={correos} clave="email" header="Correos" edit={false} borrar={true} setRefrescar={setRefrescar} refrescar={refrescar}/>
                                 <div className="input-group mt-3 mb-3 w-90 mx-auto">
                                     <InputGroup className="mx-auto w-90 btn-outline-light mb-2">
                                         <InputGroup.Addon>
