@@ -8,12 +8,12 @@ const CardMateria = ({ ...props }) => {
     const [state, setState] = useState(false);
     const { materia, setConfirmation, mostrarMsj } = props;
 
-    function calcularMovimientos(datos){
+    function calcularMovimientos(datos) {
         var cantidad = 0;
         datos.map(item => {
-            if(item.tipo === 'ENTRADA'){
+            if (item.tipo === 'ENTRADA') {
                 cantidad += item.cantidad
-            }else{
+            } else {
                 cantidad -= item.cantidad;
             }
         })
@@ -36,6 +36,11 @@ const CardMateria = ({ ...props }) => {
                 <Label icon="hashtag" value={calcularMovimientos(materia.movimientos) + ' ' + materia.materia_prima.unidad} />
             </div>
             <div className="d-flex justify-content-end mx-1 my-1">
+                <div className="mx-1">
+                    <Link to={`salida/${materia.materia_prima.id}`}>
+                        <Action tooltip="Ingresar Salida" color="violet" icon="fas fa-minus" size="xs" />
+                    </Link>
+                </div>
                 <div className="mx-1"><Link to={`movimientos/${materia.materia_prima.id}/${materia.materia_prima.nombre}`}><Action tooltip="Ver movimientos" color="blue" icon="info" size="xs" /></Link></div>
                 <div className="mx-1"><Link to={`movimiento/nuevo/${materia.materia_prima.id}`}><Action tooltip="Agregar Movimiento" color="green" icon="plus" size="xs" /></Link></div>
                 <div className="mx-1"><Link to={`materias_primas/editar/${materia.materia_prima.id}`}><Action tooltip="Editar Materia Prima" color="orange" icon="edit" size="xs" /></Link></div>

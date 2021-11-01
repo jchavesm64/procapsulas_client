@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useMutation } from '@apollo/react-hooks'
 import { UPDATE_COTIZACION } from '../../services/CotizacionService'
-import { Notification, Table, Input } from 'rsuite';
+import { Notification, Table, Input, InputGroup, Icon } from 'rsuite';
 import Boton from '../shared/Boton';
 const { Column, HeaderCell, Cell } = Table;
 
@@ -12,7 +12,6 @@ const EditarStick = ({ ...props }) => {
     const { formula, cliente, producto, objeto } = props
     const [cotizacion, setCotizacion] = useState(null)
     const [venta, setVenta] = useState(objeto.venta)
-    const [dosis, setDosis] = useState(objeto.dosis)
     const [envases, setEnvases] = useState(objeto.cant_env)
     const [etiquetas, setEtiquetas] = useState(objeto.cant_eti)
     const [costoEtiquetas, setCostoEtiquetas] = useState(objeto.cost_eti)
@@ -26,7 +25,6 @@ const EditarStick = ({ ...props }) => {
         setEnvases(objeto.cant_env)
         setEtiquetas(objeto.cant_eti)
         setCostoEtiquetas(objeto.cost_eti)
-        setDosis(objeto.dosis)
     }, [objeto])
 
     if (formula !== null && cotizacion === null) {
@@ -107,7 +105,6 @@ const EditarStick = ({ ...props }) => {
             elementos: ele,
             porcentajes: por,
             precios: precio,
-            dosis: dosis,
             cant_env: envases,
             cant_eti: etiquetas,
             cost_eti: costoEtiquetas,
@@ -144,7 +141,7 @@ const EditarStick = ({ ...props }) => {
     }
 
     const validarFormulario = () => {
-        return !formula || !cliente || !producto || !peso || !dosis || envases === 0 || etiquetas === 0 || costoEtiquetas === 0 || utilidad === 0 || getTotal() === 0
+        return !formula || !cliente || !producto || !peso || envases === 0 || etiquetas === 0 || costoEtiquetas < 0 || utilidad === 0 || getTotal() === 0
     }
 
     const actualizarPrecio = (data, precio) => {
@@ -207,23 +204,22 @@ const EditarStick = ({ ...props }) => {
             <h5>Parámetros específicos de la cotización</h5>
             <div className="row my-2">
                 <div className="col-md-6">
-                    <h6>Dosis</h6>
-                    <Input type="number" min={1} value={dosis} onChange={(e) => setDosis(e)} />
                     <h6>Total de envases</h6>
                     <Input type="number" min={1} value={envases} onChange={(e) => setEnvases(e)} />
                     <h6>Total de Empaques</h6>
                     <Input type="number" min={1} value={etiquetas} onChange={(e) => setEtiquetas(e)} />
                 </div>
                 <div className="col-md-6">
-                    <div style={{ height: 60 }}></div>
-                    <div style={{ height: 60 }}></div>
                     <h6>Costo por Empaque</h6>
-                    <Input type="number" min={1} value={costoEtiquetas} onChange={(e) => setCostoEtiquetas(e)} />
+                    <InputGroup size="md" className="w-90 mx-auto">
+                        <InputGroup.Addon size="md">
+                            <Icon icon="fas fa-dollar-sign" />
+                        </InputGroup.Addon>
+                        <Input type="number" min={1} value={costoEtiquetas} onChange={(e) => setCostoEtiquetas(e)} />
+                    </InputGroup>
+                    <h6>Cantidad del producto</h6>
+                    <Input type="number" searchable={true} value={peso} onChange={(e) => setPeso(e)} />
                 </div>
-            </div>
-            <div className="w-50 mx-auto">
-                <h6>Cantidad del producto</h6>
-                <Input type="number" searchable={true} value={peso} onChange={(e) => setPeso(e)} />
             </div>
             <h5>Elementos de la formula</h5>
             <div>
@@ -277,7 +273,14 @@ const EditarStick = ({ ...props }) => {
                         <Cell>
                             {
                                 rowData => {
-                                    return (<Input type="number" style={{ padding: 0, minHeight: 40, marginTop: -10 }} className="form-control text-center" defaultValue={rowData.precio_kilo} onChange={(e) => actualizarPrecio(rowData, e)} />)
+                                    return (
+                                        <InputGroup size="md" className="w-90 mx-auto" style={{ padding: 0, minHeight: 36, marginTop: -10 }}>
+                                            <InputGroup.Addon size="md">
+                                                <Icon icon="fas fa-dollar-sign" />
+                                            </InputGroup.Addon>
+                                            <Input type="number" className="form-control text-center" defaultValue={rowData.precio_kilo} onChange={(e) => actualizarPrecio(rowData, e)} />
+                                        </InputGroup>
+                                    )
                                 }
                             }
                         </Cell>
@@ -287,24 +290,31 @@ const EditarStick = ({ ...props }) => {
                         <Cell>
                             {
                                 rowData => {
-                                    return (<label>{getTotalFila(rowData.porcentaje, rowData.precio_kilo)}</label>)
+                                    return (
+                                        <InputGroup size="md" className="w-90 mx-auto" style={{ padding: 0, minHeight: 36, marginTop: -10 }}>
+                                            <InputGroup.Addon size="md">
+                                                <Icon icon="fas fa-dollar-sign" />
+                                            </InputGroup.Addon>
+                                            <label className="mt-2">{getTotalFila(rowData.porcentaje, rowData.precio_kilo)}</label>
+                                        </InputGroup>
+                                    )
                                 }
                             }
                         </Cell>
                     </Column>
                 </Table>
                 <div className="d-flex justify-content-end mb-3 mt-1">
-                    <h6>Total: {getTotal(cotizacion === null ? [] : cotizacion)}</h6>
+                    <h6>Total: <Icon icon="fas fa-dollar-sign" /> {getTotal(cotizacion === null ? [] : cotizacion)}</h6>
                 </div>
                 <div className="row my-2 p-2">
                     <h6>Coste de Fabricación por Envase</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
+                    <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
                     <h6>Porcentaje de Ganancia por Envase</h6>
                     <Input type="number" value={utilidad.utilidad} onChange={(e) => setUtilidad({ utilidad: e, validada: utilidad.validada })} />
                     <h6>Ganancia</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases) * utilidad.utilidad) / 100).toFixed(4)}</label></strong>
-                    <h6>Venta</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((getTotal() / envases) + (((getTotal() / envases) * utilidad.utilidad) / 100)).toFixed(4)}</label></strong>
+                    <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases) * utilidad.utilidad) / 100).toFixed(4)}</label></strong>
+                    <h6>Precio Final</h6>
+                    <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((getTotal() / envases) + (((getTotal() / envases) * utilidad.utilidad) / 100)).toFixed(4)}</label></strong>
                 </div>
                 {objeto.estado === 'REGISTRADA' &&
                     <div className="d-flex justify-content-end my-2">

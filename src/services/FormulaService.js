@@ -43,27 +43,22 @@ export const OBTENER_FORMULAS_MOVIMIENTOS = gql`
                     nombre
                 }
                 movimientos{
-                    id
-                    tipo
-                    lote
-                    codigo
-                    cantidad
-                    existencia
+                  	precio_unidad
+                    fecha
                 }
             }
             formulaBase{
                 id
                 nombre
                 elementos{
-                    id
-                    nombre
+                    materia_prima{
+                      id
+                      nombre
+                    }
+                  	movimientos{
+                    	precio_unidad
+                  	}
                 }
-            }
-            cliente{
-                id
-                tipo
-                nombre
-                codigo
             }
             porcentajes
         }

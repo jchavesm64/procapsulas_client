@@ -34,9 +34,53 @@ export const OBTENER_MOVIMIENTOS = gql`
     }
 `;
 
+export const OBTENER_MOVIMIENTOS_2 = gql`
+    query obtenerMovimientos2($id:ID){
+        obtenerMovimientos2(id:$id){
+            id
+            tipo
+            lote
+            proveedor{
+                id
+                empresa
+                cedula
+            }
+            codigo
+            fechaFabricacion
+            fechaVencimiento
+            fecha
+            cantidad
+            existencia
+            precio
+            precio_unidad
+            moneda
+            cao
+            usuario{
+                id
+                nombre
+                cedula
+            }
+            materia_prima{
+                id
+                nombre
+            }
+        }
+    }
+`;
+
 export const SAVE_MOVIMIENTO = gql`
     mutation insertarMovimiento($input:MovimientosInput){
         insertarMovimiento(input:$input){
+            estado
+            message
+        }
+    }
+`;
+
+
+export const SAVE_SALIDA = gql`
+    mutation insertarSalida($input:salida_inventario){
+        insertarSalida(input:$input){
             estado
             message
         }

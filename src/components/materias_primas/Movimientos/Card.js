@@ -1,13 +1,19 @@
 /* eslint-disable react/jsx-no-target-blank */
 import React, { useState } from 'react'
 import { Panel } from 'rsuite';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import Label from '../../shared/Label'
 import { Icon } from 'rsuite';
+import Action from '../../shared/Action'
 
 const CardMovimiento = ({ ...props }) => {
     const [state, setState] = useState(false);
     const { movimiento } = props;
+    const moneda = {
+        'US Dollar': '$',
+        'Colón': '₡',
+        'Yen': '¥'
+    }
 
     function getFecha(fecha) {
         var date = new Date(fecha);
@@ -52,6 +58,9 @@ const CardMovimiento = ({ ...props }) => {
                         }
                         <h6>Cantidad</h6>
                         <Label icon="hashtag" value={movimiento.cantidad} />
+                        {movimiento.tipo === 'SALIDA' &&
+                            <div style={{ height: 150 }}></div>
+                        }
                     </div>
                     <div className="col-md-6">
                         {movimiento.tipo === 'ENTRADA' &&
@@ -61,7 +70,7 @@ const CardMovimiento = ({ ...props }) => {
                                 <h6>Precio unidad</h6>
                                 <Label icon="hashtag" value={movimiento.precio_unidad} />
                                 <h6>Total</h6>
-                                <Label icon="hashtag" value={movimiento.precio} />
+                                <Label icon="hashtag" value={moneda[movimiento.moneda] + ' ' + movimiento.precio} />
                             </>
                         }
                         <h6>Registrado por</h6>
@@ -71,10 +80,14 @@ const CardMovimiento = ({ ...props }) => {
                     </div>
                 </div>
                 <div className="m-1 row">
-                    <h6>Archivo COA</h6>
-                    <div className="col-md-5 float-left bg-primary rounded py-1 my-1">
-                        <a className="text-white" href={"https://storage.cloud.google.com/bucket_pro_capsulas/archivos_coa/" + movimiento.cao+"?authuser=2"} target="_blank"><Icon icon="eye" />  Ver Archivo COA</a>
-                    </div>
+                    {movimiento.tipo === 'ENTRADA' &&
+                        <>
+                            <h6>Archivo COA</h6>
+                            <div className="col-md-5 float-left bg-primary rounded py-1 my-1">
+                                <a className="text-white" href={movimiento.cao} target="_blank"><Icon icon="eye" />  Ver Archivo COA</a>
+                            </div>
+                        </>
+                    }
                     <div className="col-md-2"></div>
                     {/* 
                     <div className="justify-content-end col-md-5 float_right bg-success rounded py-1 my-1">

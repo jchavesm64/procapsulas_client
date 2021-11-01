@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks'
-import { OBTENER_FORMULAS } from '../../services/FormulaService'
+import { OBTENER_FORMULAS_MOVIMIENTOS } from '../../services/FormulaService'
 import { OBTENER_CLIENTES } from '../../services/ClienteService'
 import { OBTENER_TIPO_PRODUCTOS } from '../../services/TipoProductoService'
 import { Loader, Notification, InputPicker } from 'rsuite';
@@ -16,14 +16,14 @@ const Cotizador = ({ ...props }) => {
     const [formula, setFomula] = useState('')
     const [cliente, setCliente] = useState('')
     const [producto, setProducto] = useState('')
-    const { loading: load_formulas, error: error_formulas, data: data_formulas } = useQuery(OBTENER_FORMULAS, { pollInterval: 1000 })
+    const { loading: load_formulas, error: error_formulas, data: data_formulas } = useQuery(OBTENER_FORMULAS_MOVIMIENTOS, { pollInterval: 1000 })
     const { loading: load_clientes, error: error_clientes, data: data_clientes } = useQuery(OBTENER_CLIENTES, { pollInterval: 1000 })
     const { loading: load_productos, error: error_productos, data: data_productos } = useQuery(OBTENER_TIPO_PRODUCTOS, { pollInterval: 1000 })
 
     const getFormulas = () => {
         if (data_formulas !== null) {
-            if (data_formulas.obtenerFormulas != null) {
-                const data = data_formulas.obtenerFormulas;
+            if (data_formulas.obtenerFormulasConMovimiento != null) {
+                const data = data_formulas.obtenerFormulasConMovimiento;
                 var datos = [];
                 data.map(item => {
                     datos.push({

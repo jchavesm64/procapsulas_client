@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useMutation } from '@apollo/react-hooks'
 import { UPDATE_COTIZACION } from '../../services/CotizacionService'
-import { Notification, Table, Input, InputPicker } from 'rsuite';
+import { Notification, Table, Input, InputPicker, InputGroup, Icon } from 'rsuite';
 import Boton from '../shared/Boton';
 const { Column, HeaderCell, Cell } = Table;
 
@@ -18,11 +18,11 @@ const CapsulaPolvo = ({ ...props }) => {
     const [etiquetas, setEtiquetas] = useState(objeto.cant_eti)
     const [costoEnvase, setCostoEnvase] = useState(objeto.cost_env)
     const [costoEtiquetas, setCostoEtiquetas] = useState(objeto.cost_eti)
-    const [utilidad, setUtilidad] = useState({utilidad: 0, validada: false});
+    const [utilidad, setUtilidad] = useState({ utilidad: 0, validada: false });
     const [peso, setPeso] = useState(objeto.peso)
 
     useEffect(() => {
-        setUtilidad({utilidad: 0, validada: false})
+        setUtilidad({ utilidad: 0, validada: false })
         setVenta(objeto.venta)
         setPeso(objeto.peso)
         setDosis(objeto.dosis)
@@ -32,7 +32,7 @@ const CapsulaPolvo = ({ ...props }) => {
         setCostoEnvase(objeto.cost_env)
         setCostoEtiquetas(objeto.cost_eti)
     }, [objeto])
-    
+
 
     if (formula !== null && cotizacion === null) {
         const datos = []
@@ -170,7 +170,7 @@ const CapsulaPolvo = ({ ...props }) => {
             cost_env: costoEnvase,
             cant_eti: etiquetas,
             cost_eti: costoEtiquetas,
-            venta: ((getTotal()/envases) + (((getTotal()/envases)*utilidad.utilidad)/100)),
+            venta: ((getTotal() / envases) + (((getTotal() / envases) * utilidad.utilidad) / 100)),
             estado: 'REGISTRADA',
             status: 'ACTIVO'
         }
@@ -203,16 +203,16 @@ const CapsulaPolvo = ({ ...props }) => {
     }
 
     const validarFormulario = () => {
-        return !formula || !cliente || !producto || !peso || !dosis || !serving || envases === 0 || costoEnvase === 0 || etiquetas === 0 || costoEtiquetas === 0 || utilidad === 0 || getTotal() === 0
+        return !formula || !cliente || !producto || !peso || !dosis || !serving || envases === 0 || costoEnvase < 0 || etiquetas === 0 || costoEtiquetas < 0 || utilidad === 0 || getTotal() === 0
     }
     //Revisar
-    if (cotizacion === null){
-        setUtilidad({utilidad: 0, validada: false});
-    } else if (utilidad.validada === false){
+    if (cotizacion === null) {
+        setUtilidad({ utilidad: 0, validada: false });
+    } else if (utilidad.validada === false) {
         var v = venta, uti = 0;
-        v -= (getTotal()/envases);
-        uti = (v*100)/(getTotal()/envases);
-        setUtilidad({utilidad: uti.toFixed(4), validada: true})
+        v -= (getTotal() / envases);
+        uti = (v * 100) / (getTotal() / envases);
+        setUtilidad({ utilidad: uti.toFixed(4), validada: true })
     }
 
     return (
@@ -231,9 +231,19 @@ const CapsulaPolvo = ({ ...props }) => {
                     <h6>Serving</h6>
                     <Input type="number" min={1} value={serving} onChange={(e) => setServing(e)} />
                     <h6>Costo por envase</h6>
-                    <Input type="number" min={1} value={costoEnvase} onChange={(e) => setCostoEnvase(e)} />
+                    <InputGroup size="md" className="w-90 mx-auto">
+                        <InputGroup.Addon size="md">
+                            <Icon icon="fas fa-dollar-sign" />
+                        </InputGroup.Addon>
+                        <Input type="number" min={1} value={costoEnvase} onChange={(e) => setCostoEnvase(e)} />
+                    </InputGroup>
                     <h6>Costo por etiqueta</h6>
-                    <Input type="number" min={1} value={costoEtiquetas} onChange={(e) => setCostoEtiquetas(e)} />
+                    <InputGroup size="md" className="w-90 mx-auto">
+                        <InputGroup.Addon size="md">
+                            <Icon icon="fas fa-dollar-sign" />
+                        </InputGroup.Addon>
+                        <Input type="number" min={1} value={costoEtiquetas} onChange={(e) => setCostoEtiquetas(e)} />
+                    </InputGroup>
                 </div>
             </div>
             <div className="w-50 mx-auto">
@@ -311,7 +321,14 @@ const CapsulaPolvo = ({ ...props }) => {
                         <Cell>
                             {
                                 rowData => {
-                                    return (<Input type="number" style={{ padding: 0, minHeight: 40, marginTop: -10 }} className="form-control text-center" defaultValue={rowData.precio_kilo} onChange={(e) => actualizarPrecio(rowData, e)} />)
+                                    return (
+                                        <InputGroup size="md" className="w-90 mx-auto" style={{ padding: 0, minHeight: 36, marginTop: -10 }}>
+                                            <InputGroup.Addon size="md">
+                                                <Icon icon="fas fa-dollar-sign" />
+                                            </InputGroup.Addon>
+                                            <Input type="number" className="form-control text-center" defaultValue={rowData.precio_kilo} onChange={(e) => actualizarPrecio(rowData, e)} />
+                                        </InputGroup>
+                                    )
                                 }
                             }
                         </Cell>
@@ -321,24 +338,31 @@ const CapsulaPolvo = ({ ...props }) => {
                         <Cell>
                             {
                                 rowData => {
-                                    return (<label>{getTotalFila(rowData.porcentaje, rowData.precio_kilo)}</label>)
+                                    return (
+                                        <InputGroup size="md" className="w-90 mx-auto" style={{ padding: 0, minHeight: 36, marginTop: -10 }}>
+                                            <InputGroup.Addon size="md">
+                                                <Icon icon="fas fa-dollar-sign" />
+                                            </InputGroup.Addon>
+                                            <label className="mt-2">{getTotalFila(rowData.porcentaje, rowData.precio_kilo)}</label>
+                                        </InputGroup>
+                                    )
                                 }
                             }
                         </Cell>
                     </Column>
                 </Table>
                 <div className="d-flex justify-content-end mb-3 mt-1">
-                    <h6>Total: {getTotal(cotizacion === null ? [] : cotizacion)}</h6>
+                    <h6>Total: <Icon icon="fas fa-dollar-sign" /> {getTotal(cotizacion === null ? [] : cotizacion)}</h6>
                 </div>
                 <div className="row my-2 p-2">
                     <h6>Coste de Fabricación por Envase</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
+                    <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
                     <h6>Porcentaje de Ganancia por Envase</h6>
-                    <Input type="number" min={1} value={utilidad.utilidad} onChange={(e) => setUtilidad({utilidad: e, validada: utilidad.validada})} />
+                    <Input type="number" min={1} value={utilidad.utilidad} onChange={(e) => setUtilidad({ utilidad: e, validada: utilidad.validada })} />
                     <h6>Ganancia</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases)*utilidad.utilidad)/100).toFixed(4)}</label></strong>
-                    <h6>Venta</h6>
-                    <strong className="bg-white rounded border"><label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((getTotal()/envases) + (((getTotal()/envases)*utilidad.utilidad)/100)).toFixed(4)}</label></strong>
+                    <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases) * utilidad.utilidad) / 100).toFixed(4)}</label></strong>
+                    <h6>Precio Final</h6>
+                    <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((getTotal() / envases) + (((getTotal() / envases) * utilidad.utilidad) / 100)).toFixed(4)}</label></strong>
                 </div>
                 {objeto.estado === 'REGISTRADA' &&
                     <div className="d-flex justify-content-end my-2">

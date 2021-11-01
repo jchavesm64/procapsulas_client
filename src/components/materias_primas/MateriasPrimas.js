@@ -66,7 +66,6 @@ const MateriaPrima = ({ ...props }) => {
     const getData = () => {
         if(data_materia_prima){
             if(data_materia_prima.obtenerMateriasPrimasConMovimientos){
-                console.log(data_materia_prima.obtenerMateriasPrimasConMovimientos)
                 return data_materia_prima.obtenerMateriasPrimasConMovimientos.filter((value, index) => {
                     if (filter !== "" && modo !== "") {
                         return getFilteredByKey(modo, value, filter);

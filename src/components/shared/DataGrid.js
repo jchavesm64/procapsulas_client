@@ -9,7 +9,7 @@ import Pagination from '../shared/Pagination'
 const DataGrid = ({ ...props }) => {
     const { data, type, displayLength } = props;
     var index = 0
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(localStorage.getItem('active_page_'+type) ? localStorage.getItem('active_page_'+type) : 1);
 
     const getData = () => {
         var array = [], size = data.length;
@@ -51,7 +51,7 @@ const DataGrid = ({ ...props }) => {
             </div>
             {(data.length > displayLength) &&
                 <div div className="d-flex justify-content-end w-90">
-                    <Pagination length={data.length} displayLength={displayLength} activePage={page} setPage={setPage}/>
+                    <Pagination type={type} length={data.length} displayLength={displayLength} activePage={parseInt(page)} setPage={setPage}/>
                 </div>
             }
         </div >

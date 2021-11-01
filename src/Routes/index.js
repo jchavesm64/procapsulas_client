@@ -32,7 +32,8 @@ import Cotizador from '../components/Cotizaciones/Cotizador';
 import FormulasBase from '../components/ConfiguracionesGenerales/FormulaBase/Bases';
 import NuevaFormulaBase from '../components/ConfiguracionesGenerales/FormulaBase/nuevo';
 import EditarFormulaBase from '../components/ConfiguracionesGenerales/FormulaBase/Editar';
-import EditarCotizacion from '../components/Cotizaciones/Editar'
+import EditarCotizacion from '../components/Cotizaciones/Editar';
+import Salida from '../components/materias_primas/Movimientos/Salida';
 
 const Router = ({ refetch, session }) => {
 
@@ -72,6 +73,9 @@ const Router = ({ refetch, session }) => {
                                 <Route exact path="/materias_primas/nuevo" render={(props) => <NuevaMateriaPrima session={data} refetch={refetch} {...props}/>}/>
                                 <Route exact path="/materias_primas/editar/:id" render={(props) => <EditarMateriaPrima session={data} refetch={refetch} {...props}/>}/>
                                 <Route exact path="/movimientos/:id/:nombre" render={(props) => <Movimientos session={data} refetch={refetch} {...props}/>}/>
+
+                                <Route exact path="/salida/:id" render={(props) => <Salida session={data} refetch={refetch} {...props}/>}/>
+
                                 <Route exact path="/movimiento/nuevo/:id" render={(props) => <NuevoMovimiento session={data} refetch={refetch} {...props}/>}/>
                                 <Route exact path="/config/formulas" render={(props) => <Formulas session={data} refetch={refetch} {...props}/>}/>
                                 <Route exact path="/config/formulas/editar/:id" render={(props) => <EditarFormula uso={true} session={data} refetch={refetch} {...props}/>}/>

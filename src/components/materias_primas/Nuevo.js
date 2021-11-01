@@ -13,6 +13,8 @@ const NuevaMateriaPrima = ({ ...props }) => {
     const [insertar] = useMutation(SAVE_MATERIA_PRIMA);
     const [unidad, setUnidad] = useState('')
 
+    console.log(props.history)
+
     const getPaises = () => {
         const paises = []
         countries.map(p => {
