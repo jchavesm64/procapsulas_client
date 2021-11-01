@@ -70,7 +70,10 @@ const CardMovimiento = ({ ...props }) => {
                                 <h6>Precio unidad</h6>
                                 <Label icon="hashtag" value={movimiento.precio_unidad} />
                                 <h6>Total</h6>
-                                <Label icon="hashtag" value={moneda[movimiento.moneda] + ' ' + movimiento.precio} />
+                                <div style={{ height: 46, borderColor: 'lightgray', fontSize: 18 }} className="border w-100 mt-2 rounded align-middle">
+                                    <label style={{fontSize: 30}} className="px-3 h-100 bg-light align-middle">{moneda[movimiento.moneda]}</label>
+                                    <label className="align-middle px-2">{movimiento.precio}</label>
+                                </div>
                             </>
                         }
                         <h6>Registrado por</h6>
