@@ -126,7 +126,7 @@ const CapsulaDura = ({ ...props }) => {
             cotizacion.map(item => {
                 total += parseFloat(getTotalFila(item))
             })
-            total += parseFloat((envases * cantidad)*costoCapsula)
+            total += parseFloat((envases * cantidad) * costoCapsula)
             total += parseFloat(costoEnvase * envases)
             total += parseFloat(costoEtiquetas * etiquetas)
             return parseFloat(total).toFixed(4)
@@ -213,7 +213,7 @@ const CapsulaDura = ({ ...props }) => {
             <div className="row my-2">
                 <div className="col-md-6">
                     <h6>Cápsulas por envases</h6>
-                    <Input type="number" min={1} value={cantidad} onChange={(e) => setCantidad(e)} pattern="([0-9]{1,3}),([0-9]{1,3})"/>
+                    <Input type="number" min={1} value={cantidad} onChange={(e) => setCantidad(e)} pattern="([0-9]{1,3}),([0-9]{1,3})" />
                     <h6>Total de envases</h6>
                     <Input type="number" min={1} value={envases} onChange={(e) => setEnvases(e)} />
                     <h6>Total de etiquetas</h6>
@@ -227,7 +227,7 @@ const CapsulaDura = ({ ...props }) => {
                         <InputGroup.Addon size="md">
                             <Icon icon="fas fa-dollar-sign" />
                         </InputGroup.Addon>
-                        <Input type="number" min={1} value={costoCapsula} onChange={(e) => setCostoCapsula(e)} lang='es'/>
+                        <Input type="number" min={1} value={costoCapsula} onChange={(e) => setCostoCapsula(e)} lang='es' />
                     </InputGroup>
                     <h6>Costo por envase</h6>
                     <InputGroup size="md" className="w-90 mx-auto">
@@ -260,11 +260,11 @@ const CapsulaDura = ({ ...props }) => {
                             }
                         </Cell>
                     </Column>
-                    <Column flexGrow={1}>
+                    <Column flexGrow={0}>
                         <HeaderCell>Porcentaje</HeaderCell>
                         <Cell dataKey="porcentaje" />
                     </Column>
-                    <Column flexGrow={1}>
+                    <Column flexGrow={0}>
                         <HeaderCell>MG / Cápsula</HeaderCell>
                         <Cell>
                             {
@@ -274,7 +274,7 @@ const CapsulaDura = ({ ...props }) => {
                             }
                         </Cell>
                     </Column>
-                    <Column flexGrow={1}>
+                    <Column flexGrow={0}>
                         <HeaderCell>GR / Cápsula</HeaderCell>
                         <Cell>
                             {
@@ -284,7 +284,7 @@ const CapsulaDura = ({ ...props }) => {
                             }
                         </Cell>
                     </Column>
-                    <Column flexGrow={1}>
+                    <Column flexGrow={0}>
                         <HeaderCell>GR / Envase</HeaderCell>
                         <Cell>
                             {
@@ -294,7 +294,7 @@ const CapsulaDura = ({ ...props }) => {
                             }
                         </Cell>
                     </Column>
-                    <Column flexGrow={1}>
+                    <Column flexGrow={0}>
                         <HeaderCell>GR / Total</HeaderCell>
                         <Cell>
                             {
@@ -304,7 +304,7 @@ const CapsulaDura = ({ ...props }) => {
                             }
                         </Cell>
                     </Column>
-                    <Column flexGrow={1}>
+                    <Column flexGrow={0}>
                         <HeaderCell>KG / Total</HeaderCell>
                         <Cell>
                             {
@@ -314,7 +314,7 @@ const CapsulaDura = ({ ...props }) => {
                             }
                         </Cell>
                     </Column>
-                    <Column flexGrow={1}>
+                    <Column flexGrow={2}>
                         <HeaderCell>Precio / KG</HeaderCell>
                         <Cell>
                             {
@@ -331,7 +331,7 @@ const CapsulaDura = ({ ...props }) => {
                             }
                         </Cell>
                     </Column>
-                    <Column flexGrow={1}>
+                    <Column flexGrow={2}>
                         <HeaderCell>Total</HeaderCell>
                         <Cell>
                             {
@@ -358,10 +358,10 @@ const CapsulaDura = ({ ...props }) => {
                 <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
                 <h6>Porcentaje de Ganancia por Envase</h6>
                 <Input type="number" min={1} value={utilidad} onChange={(e) => setUtilidad(e)} />
-                <h6>Ganancia</h6>
-                <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases) * utilidad) / 100).toFixed(4)}</label></strong>
                 <h6>Precio Final</h6>
-                <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((getTotal() / envases) + (((getTotal() / envases) * utilidad) / 100)).toFixed(4)}</label></strong>
+                <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases) * utilidad) / 100).toFixed(4)}</label></strong>
+                <h6>Ganancia</h6>
+                <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((((getTotal() / envases) * utilidad) / 100) - (getTotal() / envases)).toFixed(4)}</label></strong>
             </div>
             <div className="d-flex justify-content-end my-2">
                 <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />

@@ -48,7 +48,7 @@ const Router = ({ refetch, session }) => {
                     {estado ? <Sidebar session={data} /> : ''}
                     <div id="content">
                         <NavMenu session={data} refetch={refetch} />
-                        <div className="container">
+                        <div className="container-fluid p-5">
                             <Switch>
                                 {!estado ? <Route exact path="/login" render={() => <Login refetch={refetch} />} /> : ''}
                                 {!estado ? <Route exact path="/olvido_clave" render={() => <Clave refetch={refetch}/>}/>: ''}

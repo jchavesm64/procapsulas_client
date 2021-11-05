@@ -30,7 +30,7 @@ const List = (props) => {
                             <Cell dataKey={props.clave} />
                         </Column>
                     ) : (
-                        <Column flexGrow={1}>
+                        <Column flexGrow={2}>
                             <HeaderCell style={{ background: '#0CA3AE', color: 'white' }}>{props.header}</HeaderCell>
                             <Cell dataKey={props.clave} />
                         </Column>

@@ -139,7 +139,7 @@ const EditarDura = ({ ...props }) => {
             cotizacion.map(item => {
                 total += parseFloat(getTotalFila(item))
             })
-            total += parseFloat((envases * cantidad)*costoCapsula)
+            total += parseFloat((envases * cantidad) * costoCapsula)
             total += parseFloat(costoEnvase * envases)
             total += parseFloat(costoEtiquetas * etiquetas)
             return parseFloat(total).toFixed(4)
@@ -287,11 +287,11 @@ const EditarDura = ({ ...props }) => {
                                     }
                                 </Cell>
                             </Column>
-                            <Column flexGrow={1}>
+                            <Column flexGrow={0}>
                                 <HeaderCell>Porcentaje</HeaderCell>
                                 <Cell dataKey="porcentaje" />
                             </Column>
-                            <Column flexGrow={1}>
+                            <Column flexGrow={0}>
                                 <HeaderCell>MG / Cápsula</HeaderCell>
                                 <Cell>
                                     {
@@ -301,7 +301,7 @@ const EditarDura = ({ ...props }) => {
                                     }
                                 </Cell>
                             </Column>
-                            <Column flexGrow={1}>
+                            <Column flexGrow={0}>
                                 <HeaderCell>GR / Cápsula</HeaderCell>
                                 <Cell>
                                     {
@@ -311,7 +311,7 @@ const EditarDura = ({ ...props }) => {
                                     }
                                 </Cell>
                             </Column>
-                            <Column flexGrow={1}>
+                            <Column flexGrow={0}>
                                 <HeaderCell>GR / Envase</HeaderCell>
                                 <Cell>
                                     {
@@ -321,7 +321,7 @@ const EditarDura = ({ ...props }) => {
                                     }
                                 </Cell>
                             </Column>
-                            <Column flexGrow={1}>
+                            <Column flexGrow={0}>
                                 <HeaderCell>GR / Total</HeaderCell>
                                 <Cell>
                                     {
@@ -331,7 +331,7 @@ const EditarDura = ({ ...props }) => {
                                     }
                                 </Cell>
                             </Column>
-                            <Column flexGrow={1}>
+                            <Column flexGrow={0}>
                                 <HeaderCell>KG / Total</HeaderCell>
                                 <Cell>
                                     {
@@ -341,7 +341,7 @@ const EditarDura = ({ ...props }) => {
                                     }
                                 </Cell>
                             </Column>
-                            <Column flexGrow={1}>
+                            <Column flexGrow={2}>
                                 <HeaderCell>Precio / KG</HeaderCell>
                                 <Cell>
                                     {
@@ -358,7 +358,7 @@ const EditarDura = ({ ...props }) => {
                                     }
                                 </Cell>
                             </Column>
-                            <Column flexGrow={1}>
+                            <Column flexGrow={2}>
                                 <HeaderCell>Total</HeaderCell>
                                 <Cell>
                                     {
@@ -385,10 +385,10 @@ const EditarDura = ({ ...props }) => {
                         <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
                         <h6>Porcentaje de Ganancia por Envase</h6>
                         <Input type="number" value={utilidad.utilidad} onChange={(e) => setUtilidad({ utilidad: e, validada: utilidad.validada })} />
-                        <h6>Ganancia</h6>
-                        <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases) * utilidad.utilidad) / 100).toFixed(4)}</label></strong>
                         <h6>Precio Final</h6>
-                        <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((getTotal() / envases) + (((getTotal() / envases) * utilidad.utilidad) / 100)).toFixed(4)}</label></strong>
+                        <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases) * utilidad.utilidad) / 100).toFixed(4)}</label></strong>
+                        <h6>Ganancia</h6>
+                        <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((((getTotal() / envases) * utilidad.utilidad) / 100) - (getTotal() / envases)).toFixed(4)}</label></strong>
                     </div>
                     {objeto.estado === 'REGISTRADA' &&
                         <div className="d-flex justify-content-end my-2">

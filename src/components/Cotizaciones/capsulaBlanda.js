@@ -351,7 +351,7 @@ const CapsulaBlanda = ({ ...props }) => {
                     <h6>Total de etiquetas</h6>
                     <Input type="number" min={1} value={etiquetas} onChange={(e) => setEtiquetas(e)} />
                     <h6>Cápsulas a producir</h6>
-                    <label className="w-100 bg-white rounded border pt-2 px-2" style={{ fontSize: 14, height: 36 }}>{cantidad*envases}</label>
+                    <label className="w-100 bg-white rounded border pt-2 px-2" style={{ fontSize: 14, height: 36 }}>{cantidad * envases}</label>
                 </div>
                 <div className="col-md-6">
                     <div style={{ height: 60 }}></div>
@@ -452,11 +452,11 @@ const CapsulaBlanda = ({ ...props }) => {
                                         }
                                     </Cell>
                                 </Column>
-                                <Column flexGrow={1}>
+                                <Column flexGrow={0}>
                                     <HeaderCell>Porcentaje</HeaderCell>
                                     <Cell dataKey="porcentaje" />
                                 </Column>
-                                <Column flexGrow={1}>
+                                <Column flexGrow={0}>
                                     <HeaderCell>MG / Cápsula</HeaderCell>
                                     <Cell>
                                         {
@@ -466,7 +466,7 @@ const CapsulaBlanda = ({ ...props }) => {
                                         }
                                     </Cell>
                                 </Column>
-                                <Column flexGrow={1}>
+                                <Column flexGrow={0}>
                                     <HeaderCell>GR / Cápsula</HeaderCell>
                                     <Cell>
                                         {
@@ -476,7 +476,7 @@ const CapsulaBlanda = ({ ...props }) => {
                                         }
                                     </Cell>
                                 </Column>
-                                <Column flexGrow={1}>
+                                <Column flexGrow={0}>
                                     <HeaderCell>GR / Envase</HeaderCell>
                                     <Cell>
                                         {
@@ -486,7 +486,7 @@ const CapsulaBlanda = ({ ...props }) => {
                                         }
                                     </Cell>
                                 </Column>
-                                <Column flexGrow={1}>
+                                <Column flexGrow={0}>
                                     <HeaderCell>GR / Total</HeaderCell>
                                     <Cell>
                                         {
@@ -496,7 +496,7 @@ const CapsulaBlanda = ({ ...props }) => {
                                         }
                                     </Cell>
                                 </Column>
-                                <Column flexGrow={1}>
+                                <Column flexGrow={0}>
                                     <HeaderCell>KG / Total</HeaderCell>
                                     <Cell>
                                         {
@@ -506,7 +506,7 @@ const CapsulaBlanda = ({ ...props }) => {
                                         }
                                     </Cell>
                                 </Column>
-                                <Column flexGrow={1}>
+                                <Column flexGrow={2}>
                                     <HeaderCell>Precio / KG</HeaderCell>
                                     <Cell>
                                         {
@@ -523,7 +523,7 @@ const CapsulaBlanda = ({ ...props }) => {
                                         }
                                     </Cell>
                                 </Column>
-                                <Column flexGrow={1}>
+                                <Column flexGrow={2}>
                                     <HeaderCell>Total</HeaderCell>
                                     <Cell>
                                         {
@@ -550,10 +550,10 @@ const CapsulaBlanda = ({ ...props }) => {
                             <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" size="lg" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{getCostoEnvace()}</label></strong>
                             <h6>Porcentaje de Ganancia por Envase</h6>
                             <Input type="number" min={1} value={utilidad} onChange={(e) => setUtilidad(e)} />
-                            <h6>Ganancia</h6>
-                            <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" size="lg" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases) * utilidad) / 100).toFixed(4)}</label></strong>
                             <h6>Precio Final</h6>
-                            <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" size="lg" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((getTotal() / envases) + (((getTotal() / envases) * utilidad) / 100)).toFixed(4)}</label></strong>
+                            <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat(((getTotal() / envases) * utilidad) / 100).toFixed(4)}</label></strong>
+                            <h6>Ganancia</h6>
+                            <strong className="bg-white rounded border"><Icon icon="fas fa-dollar-sign" /> <label className="pt-2" style={{ fontSize: 16, height: 40 }}>{(utilidad === 0 || envases === 0) ? 0 : parseFloat((((getTotal() / envases) * utilidad) / 100) - (getTotal() / envases)).toFixed(4)}</label></strong>
                         </div>
                         <div className="d-flex justify-content-end my-2">
                             <Boton name="Guardar Cotización" icon="plus" color="green" tooltip="Guardar Cotización" onClick={() => onSaveCotizacion()} disabled={validarFormulario()} />

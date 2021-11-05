@@ -81,7 +81,7 @@ const NuevaMateriaPrima = ({ ...props }) => {
                 </div>
                 <div className="col-md-6 mt-2">
                     <h6 className="my-1">Unidad Métrica</h6>
-                    <InputPicker className="w-100" data={[{ label: 'Kilogramo', value: 'Kilogramo' }, { label: 'Litro', value: 'Litro' }]} placeholder="Unidad Métrica" value={unidad} onChange={(e) => setUnidad(e)} />
+                    <InputPicker className="w-100" data={[{ label: 'Kilogramo', value: 'Kilogramo' }, { label: 'Litro', value: 'Litro' }, { label: 'Unidades', value: 'Unidades' }]} placeholder="Unidad Métrica" value={unidad} onChange={(e) => setUnidad(e)} />
                 </div>
             </div>
             <div className="d-flex justify-content-end float-rigth mt-2">
