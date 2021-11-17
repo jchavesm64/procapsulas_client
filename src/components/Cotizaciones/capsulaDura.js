@@ -20,13 +20,15 @@ const CapsulaDura = ({ ...props }) => {
     const [peso, setPeso] = useState(0)
     const { formula, cliente, producto } = props
 
+    console.log(formula)
+
     if (formula !== null && cotizacion === null) {
         const datos = []
         for (let i = 0; i < formula.elementos.length; i++) {
             datos.push({
                 materia_prima: formula.elementos[i].materia_prima,
                 porcentaje: formula.porcentajes[i],
-                precio_kilo: formula.elementos[i].movimientos[0].precio_unidad
+                precio_kilo: formula.elementos[i].movimientos.length > 0 ? formula.elementos[i].movimientos[0].precio_unidad : 0
             })
         }
         setCotizacion(datos)

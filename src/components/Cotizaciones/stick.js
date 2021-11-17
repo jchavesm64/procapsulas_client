@@ -24,7 +24,7 @@ const Stick = ({ ...props }) => {
             datos.push({
                 materia_prima: formula.elementos[i].materia_prima,
                 porcentaje: formula.porcentajes[i],
-                precio_kilo: formula.elementos[i].movimientos[0].precio_unidad
+                precio_kilo: formula.elementos[i].movimientos.length > 0 ? formula.elementos[i].movimientos[0].precio_unidad : 0
             })
         }
         setCotizacion(datos)

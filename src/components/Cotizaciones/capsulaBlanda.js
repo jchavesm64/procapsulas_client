@@ -26,7 +26,7 @@ const CapsulaBlanda = ({ ...props }) => {
             datos.push({
                 materia_prima: formula.elementos[i].materia_prima,
                 porcentaje: formula.porcentajes[i],
-                precio_kilo: formula.elementos[i].movimientos[0].precio_unidad
+                precio_kilo: formula.elementos[i].movimientos.length > 0 ? formula.elementos[i].movimientos[0].precio_unidad : 0
             })
         }
         var base = formula.formulaBase.elementos
@@ -34,7 +34,7 @@ const CapsulaBlanda = ({ ...props }) => {
             capsula.push({
                 materia_prima: base[i].materia_prima,
                 cantidad_kilo: 0,
-                precio_kilo: base[i].movimientos[0].precio_unidad
+                precio_kilo: base[i].movimientos.length > 0 ? base[i].movimientos[0].precio_unidad : 0
             })
         }
         capsula.push({

@@ -48,14 +48,12 @@ const MateriaPrima = ({ ...props }) => {
         if (modo === "1") {
             const val = key.materia_prima.nombre.toLowerCase();
             const val2 = value.toLowerCase();
-            console.log(val, val2, val.includes(val2));
             if (val.includes(val2)) {
                 return key
             }
         } else if (modo === "2") {
             const val = key.materia_prima.pais.toLowerCase();
             const val2 = value.toLowerCase();
-            console.log(val, val2, val.includes(val2));
             if (val.includes(val2)) {
                 return key
             }
