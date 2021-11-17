@@ -8,12 +8,11 @@ import Pagination from '../shared/Pagination'
 
 const DataGrid = ({ ...props }) => {
     const { data, type, displayLength } = props;
-    console.log(data)
     var index = 0
-    if(data.length <= displayLength){
-        localStorage.setItem('active_page_'+type, 1)
+    const [page, setPage] = useState((localStorage.getItem('active_page_'+type) && (data.length > displayLength)) ? localStorage.getItem('active_page_'+type) : 1);
+    if(data.length < displayLength && page !== 1){
+        setPage(1)
     }
-    const [page, setPage] = useState(localStorage.getItem('active_page_'+type) ? localStorage.getItem('active_page_'+type) : 1);
 
     const getData = () => {
         var array = [], size = data.length;
