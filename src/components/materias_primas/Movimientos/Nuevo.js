@@ -5,6 +5,7 @@ import { Input, InputPicker, Notification, Uploader, Loader, Checkbox, Modal, Bu
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { SAVE_MOVIMIENTO } from '../../../services/MovimientosService';
 import { OBTENER_PROVEEDORES } from '../../../services/ProveedorService';
+import { OBTENER_CLIENTES } from '../../../services/ClienteService';
 import { VALIDAR_PARAMETRO } from '../../../services/ParametrosGeneralesService';
 import { UPLOAD_FILE_COA } from '../../../services/MovimientosService';
 import Boton from '../../shared/Boton';
@@ -12,6 +13,8 @@ import Boton from '../../shared/Boton';
 const NuevoMovimiento = (props) => {
     const [lote, setLote] = useState('')
     const [codigo, setCodigo] = useState('')
+    const [cedido, setCedido] = useState(false)
+    const [cliente, setCliente] = useState('')
     const [proveedor, setProveedor] = useState('')
     const [fechaFabricacion, setFechaFabricacion] = useState('')
     const [fechaVencimiento, setFechaVencimiento] = useState('')
@@ -24,7 +27,8 @@ const NuevoMovimiento = (props) => {
     const [p_correcto, setPCorrecto] = useState(false)
     const [insertar] = useMutation(SAVE_MOVIMIENTO);
     const { loading: load_proveedores, data: data_proveedores } = useQuery(OBTENER_PROVEEDORES, { pollInterval: 1000 })
-    const [val_cod, {loading: load_validar}] = useMutation(VALIDAR_PARAMETRO);
+    const { loading: load_clientes, data: data_clientes } = useQuery(OBTENER_CLIENTES, { pollInterval: 1000 })
+    const [val_cod, { loading: load_validar }] = useMutation(VALIDAR_PARAMETRO);
     const [subir, { loading: subirLoading }] = useMutation(UPLOAD_FILE_COA)
     const { session } = props
     const { id } = props.match.params
@@ -62,12 +66,15 @@ const NuevoMovimiento = (props) => {
         var date = new Date();
         var fecha = date.getFullYear() + "-" + (((date.getMonth() + 1) < 10) ? ('0' + (date.getMonth() + 1)) : (date.getMonth() + 1)) + '-' + ((date.getDate() < 10) ? ('0' + date.getDate()) : date.getDate());
         if ((fechaFabricacion < fechaVencimiento && fechaFabricacion <= fecha) || p_correcto) {
-            if (!(cantidad <= 0 || precio <= 0)) {
+            const pasar = cedido ? (cantidad <= 0) : (cantidad <= 0 || precio <= 0)
+            if (!pasar) {
                 try {
                     const input = {
                         tipo: 'ENTRADA',
                         lote,
                         codigo,
+                        cedido,
+                        cliente: cliente.id,
                         proveedor: proveedor.id,
                         fechaFabricacion,
                         fechaVencimiento,
@@ -81,6 +88,7 @@ const NuevoMovimiento = (props) => {
                         usuario: session.id,
                         materia_prima: id
                     }
+                    console.log(input)
                     const { data } = await insertar({ variables: { input }, errorPolicy: 'all' });
                     const { estado, message } = data.insertarMovimiento;
                     if (estado) {
@@ -147,12 +155,25 @@ const NuevoMovimiento = (props) => {
         return datos;
     }
 
+    const getClientes = () => {
+        const datos = []
+        if (data_clientes.obtenerClientes) {
+            data_clientes.obtenerClientes.map(item => {
+                datos.push({
+                    "value": item,
+                    "label": item.nombre
+                });
+            });
+        }
+        return datos;
+    }
+
     const validarCodigo = async () => {
         const input = {
             codigo: 'C-001',
             valor: parametro
         }
-        const {data} = await val_cod({ variables: { input }, errorPolicy: 'all' });
+        const { data } = await val_cod({ variables: { input }, errorPolicy: 'all' });
         const { estado, message } = data.validarParametro;
         if (estado) {
             Notification['success']({
@@ -171,7 +192,7 @@ const NuevoMovimiento = (props) => {
         }
     }
 
-    if (load_proveedores || load_validar) return (<Loader backdrop content="Cargando..." vertical size="lg" />);
+    if (load_proveedores || load_validar || load_clientes) return (<Loader backdrop content="Cargando..." vertical size="lg" />);
 
     if (subirLoading) {
         return (
@@ -250,9 +271,21 @@ const NuevoMovimiento = (props) => {
 
                 </div>
             </div>
+            <Checkbox checked={cedido} onChange={() => setCedido(!cedido)}>Marcar en caso de ser materia cedido por un cliente</Checkbox>
             <div className="w-75 mx-auto">
-                <h6>Seleccione el Proveedor</h6>
-                <InputPicker cleanable={false} className="rounded-0 w-100" size="md" placeholder="Proveedores" data={getProvedores()} searchable={true} onChange={(e) => setProveedor(e)} />
+                {
+                    cedido === false ? (
+                        <>
+                            <h6>Seleccione el Proveedor</h6>
+                            <InputPicker cleanable={false} className="rounded-0 w-100" size="md" placeholder="Proveedores" data={getProvedores()} searchable={true} onChange={(e) => setProveedor(e)} />
+                        </>
+                    ) : (
+                        <>
+                            <h6>Seleccione el Cliente</h6>
+                            <InputPicker cleanable={false} className="rounded-0 w-100" size="md" placeholder="Clientes" data={getClientes()} searchable={true} onChange={(e) => setCliente(e)} />
+                        </>
+                    )
+                }
             </div>
             <div className="w-100 mx-auto">
                 <h6>Seleccione el archivo COA</h6>
@@ -261,7 +294,7 @@ const NuevoMovimiento = (props) => {
                 </Uploader>
             </div>
             <div className="d-flex justify-content-end float-rigth mt-2">
-                <Boton onClick={() => subirArchivo()} tooltip="Guardar Proveedor" name="Guardar" icon="save" color="green" disabled={validarForm()} />
+                <Boton onClick={() => subirArchivo()} tooltip="Guardar Movimiento" name="Guardar" icon="save" color="green" disabled={validarForm()} />
             </div>
         </div>
     );

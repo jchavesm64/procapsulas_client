@@ -6,6 +6,12 @@ export const OBTENER_MOVIMIENTOS = gql`
             id
             tipo
             lote
+            cedido
+            cliente{
+                id
+                nombre
+                codigo
+            }
             proveedor{
                 id
                 empresa
@@ -40,6 +46,12 @@ export const OBTENER_MOVIMIENTOS_2 = gql`
             id
             tipo
             lote
+            cedido
+            cliente{
+                id
+                nombre
+                codigo
+            }
             proveedor{
                 id
                 empresa

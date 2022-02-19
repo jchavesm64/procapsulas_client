@@ -116,3 +116,23 @@ export const DELETE_COTIZACION = gql`
         }
     }
 `;
+
+export const OBTENER_ORDENES = gql`
+    query obtenerCotizaciones2{
+        obtenerCotizaciones2{
+            id
+            formula{
+                id
+                nombre
+            }
+            presentacion{
+                id
+                tipo
+            }
+            cliente{
+                id
+                nombre
+            }
+        }
+    }
+`;

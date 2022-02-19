@@ -11,6 +11,8 @@ import EditarDura from './EditarDura'
 import EditarBlanda from './EditarBlanda'
 import EditarPolvo from './EditarPolvo'
 import EditarStick from './EditarStick'
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import CotizacionPDF from './pdf/CotizacionPDF'
 
 const EditarCotizacion = ({ props, cotizacion }) => {
     const [formula, setFomula] = useState(cotizacion.formula.id)
@@ -19,6 +21,8 @@ const EditarCotizacion = ({ props, cotizacion }) => {
     const { loading: load_formulas, error: error_formulas, data: data_formulas } = useQuery(OBTENER_FORMULAS, { pollInterval: 1000 })
     const { loading: load_clientes, error: error_clientes, data: data_clientes } = useQuery(OBTENER_CLIENTES, { pollInterval: 1000 })
     const { loading: load_productos, error: error_productos, data: data_productos } = useQuery(OBTENER_TIPO_PRODUCTOS, { pollInterval: 1000 })
+    const date = new Date();
+    const fecha = date.getFullYear() + "-" + (((date.getMonth() + 1) < 10) ? ('0' + (date.getMonth() + 1)) : (date.getMonth() + 1)) + '-' + ((date.getDate() < 10) ? ('0' + date.getDate()) : date.getDate());
 
     useEffect(() => {
         setFomula(cotizacion.formula.id)
@@ -126,7 +130,7 @@ const EditarCotizacion = ({ props, cotizacion }) => {
 
             <div className="bg-white p-2 shadow rounded my-2">
                 {cotizacion.presentacion.tipo === 'Cápsula dura' &&
-                    <EditarDura 
+                    <EditarDura
                         formula={formula}
                         cliente={cliente}
                         producto={producto}
@@ -157,6 +161,19 @@ const EditarCotizacion = ({ props, cotizacion }) => {
                         objeto={cotizacion}
                     />
                 }
+            </div>
+            <div className="my-2 d-flex justify-content-start">
+                <PDFDownloadLink
+                    document={<CotizacionPDF formula={cotizacion.formula} cliente={cotizacion.cliente} producto={cotizacion.presentacion} objeto={cotizacion} />}
+                    fileName={`INFORME_COTIZACION_${cotizacion.cliente.nombre}_${cotizacion.presentacion.tipo}_${cotizacion.formula.nombre}_${fecha}.pdf`}
+                >
+                    {({ blob, url, loading: loadingDocument, error: error_loading }) =>
+                        loadingDocument ?
+                            <Boton name="Cargando documento..." icon="download" size="md" color="green" tooltip="Cargando informe" position='end' />
+                            :
+                            <Boton name="Descargar Pdf" icon="download" size="md" color="green" tooltip="Descargar Informe" position='end' />
+                    }
+                </PDFDownloadLink>
             </div>
         </>
     )

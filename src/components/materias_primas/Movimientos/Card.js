@@ -1,10 +1,9 @@
 /* eslint-disable react/jsx-no-target-blank */
 import React, { useState } from 'react'
 import { Panel } from 'rsuite';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Label from '../../shared/Label'
 import { Icon } from 'rsuite';
-import Action from '../../shared/Action'
 
 const CardMovimiento = ({ ...props }) => {
     const [state, setState] = useState(false);
@@ -38,8 +37,20 @@ const CardMovimiento = ({ ...props }) => {
                         <Label icon="hashtag" value={movimiento.lote} />
                         <h6>Código</h6>
                         <Label icon="barcode" value={movimiento.codigo} />
-                        <h6>Proveedor</h6>
-                        <Label icon="shopping-cart" value={movimiento.proveedor ? movimiento.proveedor.empresa : "No especificado"} />
+                        {
+                            (movimiento.cedido === null || movimiento.cedido === false) ?
+                                (
+                                    <>
+                                        <h6>Proveedor</h6>
+                                        <Label icon="shopping-cart" value={movimiento.proveedor ? movimiento.proveedor.empresa : "No especificado"} />
+                                    </>
+                                ) : (
+                                    <>
+                                        <h6>Cliente</h6>
+                                        <Label icon="shopping-cart" value={movimiento.cliente ? movimiento.cliente.nombre : "No especificado"} />
+                                    </>
+                                )
+                        }
                         {movimiento.tipo === 'ENTRADA' &&
                             <>
                                 {movimiento.fechaFabricacion &&
@@ -71,7 +82,7 @@ const CardMovimiento = ({ ...props }) => {
                                 <Label icon="hashtag" value={movimiento.precio_unidad} />
                                 <h6>Total</h6>
                                 <div style={{ height: 46, borderColor: 'lightgray', fontSize: 18 }} className="border w-100 mt-2 rounded align-middle">
-                                    <label style={{fontSize: 30}} className="px-3 h-100 bg-light align-middle">{moneda[movimiento.moneda]}</label>
+                                    <label style={{ fontSize: 30 }} className="px-3 h-100 bg-light align-middle">{moneda[movimiento.moneda]}</label>
                                     <label className="align-middle px-2">{movimiento.precio}</label>
                                 </div>
                             </>

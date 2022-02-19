@@ -8,6 +8,8 @@ import { useQuery, useMutation } from "@apollo/react-hooks";
 import Confirmation from '../shared/Confirmation';
 import Boton from '../shared/Boton';
 import Action from '../shared/Action';
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import CotizacionPDF from './pdf/CotizacionPDF'
 const { Column, HeaderCell, Cell, Pagination } = Table;
 
 const Cotizaciones = ({ ...props }) => {
@@ -20,6 +22,8 @@ const Cotizaciones = ({ ...props }) => {
     const [desactivar] = useMutation(DELETE_COTIZACION);
     const [verificar] = useMutation(VERIFICAR);
     const [produccion] = useMutation(PRODUCCION)
+    const date = new Date();
+    const fecha = date.getFullYear() + "-" + (((date.getMonth() + 1) < 10) ? ('0' + (date.getMonth() + 1)) : (date.getMonth() + 1)) + '-' + ((date.getDate() < 10) ? ('0' + date.getDate()) : date.getDate());
     const { session } = props
 
     const handleChangePage = (dataKey) => {
@@ -112,12 +116,12 @@ const Cotizaciones = ({ ...props }) => {
         var cant = 0;
         var items = []
         for (let i = 0; i < datos.elementos.length; i++) {
-            if(datos.presentacion.tipo === 'Cápsula dura' || datos.presentacion.tipo === 'Cápsula blanda'){
+            if (datos.presentacion.tipo === 'Cápsula dura' || datos.presentacion.tipo === 'Cápsula blanda') {
                 cant = ((((((parseFloat(datos.peso) * datos.porcentajes[i]) / 100) / 1000) * parseFloat(datos.cant_cap)) * parseFloat(datos.cant_env)) / 1000)
-            }else if(datos.presentacion.tipo === 'Polvo'){
+            } else if (datos.presentacion.tipo === 'Polvo') {
                 cant = (((((parseFloat(datos.dosis) * datos.porcentajes[i]) / 100) / 1000) * parseFloat(datos.serving)) * parseFloat(datos.cant_env))
-            }else{
-                cant = (((parseFloat(datos.peso) * datos.porcentajes[i])/100)/1000) * datos.cant_env
+            } else {
+                cant = (((parseFloat(datos.peso) * datos.porcentajes[i]) / 100) / 1000) * datos.cant_env
             }
             items.push({
                 id: datos.elementos[i].id,
@@ -174,12 +178,12 @@ const Cotizaciones = ({ ...props }) => {
             if (verificarExistencias(datos, false)) {
                 var items = []
                 for (let i = 0; i < datos.elementos.length; i++) {
-                    if(datos.presentacion.tipo === 'Cápsula dura' || datos.presentacion.tipo === 'Cápsula blanda'){
+                    if (datos.presentacion.tipo === 'Cápsula dura' || datos.presentacion.tipo === 'Cápsula blanda') {
                         cant = ((((((parseFloat(datos.peso) * datos.porcentajes[i]) / 100) / 1000) * parseFloat(datos.cant_cap)) * parseFloat(datos.cant_env)) / 1000)
-                    }else if(datos.presentacion.tipo === 'Polvo'){
+                    } else if (datos.presentacion.tipo === 'Polvo') {
                         cant = (((((parseFloat(datos.dosis) * datos.porcentajes[i]) / 100) / 1000) * parseFloat(datos.serving)) * parseFloat(datos.cant_env))
-                    }else{
-                        cant = (((parseFloat(datos.peso) * datos.porcentajes[i])/100)/1000) * datos.cant_env
+                    } else {
+                        cant = (((parseFloat(datos.peso) * datos.porcentajes[i]) / 100) / 1000) * datos.cant_env
                     }
                     items.push({
                         id: datos.elementos[i].id,
@@ -284,7 +288,7 @@ const Cotizaciones = ({ ...props }) => {
                             }
                         </Cell>
                     </Column>
-                    <Column width={150}>
+                    <Column width={180}>
                         <HeaderCell>Acciones</HeaderCell>
                         <Cell>
                             {
@@ -295,6 +299,19 @@ const Cotizaciones = ({ ...props }) => {
                                             <div className="mx-1"><Link to={`cotizaciones/editar/${rowData.id}`}><Action tooltip="Editar Cotización" color="orange" icon="edit" size="xs" /></Link></div>
                                             <div className="mx-1"><Action tooltip="Enviar a Producción" color="green" icon="send" size="xs" onClick={() => enviarProduccion(rowData)} /></div>
                                             <div className="mx-1"><Action onClick={() => { props.session.roles.some(rol => rol.tipo === localStorage.getItem('rol') && (rol.acciones[0].eliminar === true)) ? setConfirmation({ bool: true, id: rowData.id }) : mostrarMsj() }} tooltip="Eliminar Cotización" color="red" icon="trash" size="xs" /></div>
+                                            <div className="mx-1">
+                                                <PDFDownloadLink
+                                                    document={<CotizacionPDF formula={rowData.formula} cliente={rowData.cliente} producto={rowData.presentacion} objeto={rowData} />}
+                                                    fileName={`INFORME_COTIZACION_${rowData.cliente.nombre}_${rowData.presentacion.tipo}_${rowData.formula.nombre}_${fecha}.pdf`}
+                                                >
+                                                    {({ blob, url, loading: loadingDocument, error: error_loading }) =>
+                                                        loadingDocument ?
+                                                            ''
+                                                            :
+                                                            <Action icon="download" size="xs" color="yellow" tooltip="Descargar Informe" position='end' />
+                                                    }
+                                                </PDFDownloadLink>
+                                            </div>
                                         </div>
                                     )
                                 }

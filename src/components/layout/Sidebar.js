@@ -117,6 +117,24 @@ const SideBar = ({ session }) => {
                                     </li>
                                     : ''
                                 }
+                                {
+                                    session.roles.some(rol => rol.tipo === rolTipo && (rol.permisos.some(permiso => permiso.descripcion === "MAQUINARIA"))) ?
+                                        <li>
+                                            <a href="#maquinaria" data-bs-toggle="collapse" aria-expanded="false" >
+                                                <h6><Icon icon="fas fa-cogs" />Máquinas</h6>
+                                                <strong><Icon icon="fas fa-cogs" />Máquinas</strong>
+                                            </a>
+                                            <ul className="collapse list-unstyled" id="maquinaria">
+                                                <li className="List">
+                                                    <Link to={`/maquinaria`}><Icon icon="fas fa-cogs" />Máquinas</Link>
+                                                </li>
+                                                <li className="List">
+                                                    <Link to={`/maquinaria/nuevo`}><Icon icon="plus" />Nuevo Máquina</Link>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        : ''
+                                }
                             </ul>
                             <ul className="list-unstyled components">
                                 <li className="link">
