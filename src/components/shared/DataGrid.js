@@ -4,6 +4,9 @@ import CardClientes from '../clientes/Card'
 import CardProveedores from '../proveedores/Card'
 import CardMaterias from '../materias_primas/Card'
 import CardMovimientos from '../materias_primas/Movimientos/Card'
+import CardMaquina from '../Maquinaria/Card'
+import CardIncidente from '../Maquinaria/Incidentes/Card'
+import CardMantenimientos from '../Maquinaria/Mantenimientos/Card'
 import Pagination from '../shared/Pagination'
 
 const DataGrid = ({ ...props }) => {
@@ -30,6 +33,12 @@ const DataGrid = ({ ...props }) => {
                 array.push(<CardMaterias key={i} materia={data[i]} {...props} />)
             }else if(type === 'movimientos'){
                 array.push(<CardMovimientos key={i} movimiento={data[i]} {...props} />)
+            }else if(type === 'maquina'){
+                array.push(<CardMaquina key={i} maquina={data[i]} {...props} />)
+            }else if(type === 'incidente'){
+                array.push(<CardIncidente key={i} incidente={data[i]} {...props} />)
+            }else if(type === 'mantenimiento'){
+                array.push(<CardMantenimientos key={i} mantenimiento={data[i]} {...props} />)
             }
         }
         return array
