@@ -7,6 +7,12 @@ import CardMovimientos from '../materias_primas/Movimientos/Card'
 import CardMaquina from '../Maquinaria/Card'
 import CardIncidente from '../Maquinaria/Incidentes/Card'
 import CardMantenimientos from '../Maquinaria/Mantenimientos/Card'
+import CardProducto from '../productos/Card'
+import CardMovimientosProductos from '../productos/Movimientos/Card'
+import CardSeleccion from '../Seleccion/Card'
+import CardMovimientosSeleccion from '../Seleccion/Movimientos/Card'
+import CardDispensado from '../Dispensado/Card'
+import CardMovimientosDispensado from '../Dispensado/Movimientos/Card'
 import Pagination from '../shared/Pagination'
 
 const DataGrid = ({ ...props }) => {
@@ -39,6 +45,18 @@ const DataGrid = ({ ...props }) => {
                 array.push(<CardIncidente key={i} incidente={data[i]} {...props} />)
             }else if(type === 'mantenimiento'){
                 array.push(<CardMantenimientos key={i} mantenimiento={data[i]} {...props} />)
+            }else if(type === 'producto'){
+                array.push(<CardProducto key={i} producto={data[i]} {...props} />)
+            }else if(type === 'movimientos_productos'){
+                array.push(<CardMovimientosProductos key={i} movimiento={data[i]} {...props} />)
+            }else if(type === 'seleccion'){
+                array.push(<CardSeleccion key={i} seleccion={data[i]} {...props} />)
+            }else if(type === 'movimientos_seleccion'){
+                array.push(<CardMovimientosSeleccion key={i} movimiento={data[i]} {...props} />)
+            }else if(type === 'dispensado'){
+                array.push(<CardDispensado key={i} dispensado={data[i]} {...props} />)
+            }else if(type === 'movimientos_dispensado'){
+                array.push(<CardMovimientosDispensado key={i} movimiento={data[i]} {...props} />)
             }
         }
         return array

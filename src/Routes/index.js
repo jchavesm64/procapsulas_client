@@ -46,6 +46,24 @@ import NuevoMantenimiento from '../components/Maquinaria/Mantenimientos/Nuevo';
 import EditarMantenimiento from '../components/Maquinaria/Mantenimientos/Editar';
 import InformacionMaquinaria from '../components/Maquinaria/Informacion';
 import Ubicacion from '../components/ConfiguracionesGenerales/Ubicacion/Ubicacion';
+import Puestos from '../components/ConfiguracionesGenerales/Puestos/Puestos';
+import Productos from '../components/productos/Productos';
+import NuevoProducto from '../components/productos/Nuevo';
+import EditarProducto from '../components/productos/Editar';
+import MovimientosProductos from '../components/productos/Movimientos/Movimientos';
+import NuevoMovimientoProducto from '../components/productos/Movimientos/Nuevo';
+import Seleccion from '../components/Seleccion/Seleccion';
+import NuevaSeleccion from '../components/Seleccion/Nuevo';
+import EditarSeleccion from '../components/Seleccion/Editar';
+import MovimientosSeleccion from '../components/Seleccion/Movimientos/Movimientos';
+import NuevoMovimientoSeleccion from '../components/Seleccion/Movimientos/Nuevo';
+import SalidaMovimientoSeleccion from '../components/Seleccion/Movimientos/Salida';
+import Dispensado from '../components/Dispensado/Dispensado';
+import NuevoDispensado from '../components/Dispensado/Nuevo';
+import EditarDispensado from '../components/Dispensado/Editar';
+import MovimientosDispensado from '../components/Dispensado/Movimientos/Movimientos';
+import NuevoMovimientoDispensado from '../components/Dispensado/Movimientos/Nuevo';
+import SalidaMovimientoDispensado from '../components/Dispensado/Movimientos/Salida';
 
 const Router = ({ refetch, session }) => {
 
@@ -80,7 +98,7 @@ const Router = ({ refetch, session }) => {
                                 <Route exact path="/config/formulasbase/nuevo" render={(props) => <NuevaFormulaBase session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/config/formulasbase/editar/:id" render={(props) => <EditarFormulaBase uso={true} session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/config/formulasbase/detalles/:id" render={(props) => <EditarFormulaBase uso={false} session={data} refetch={refetch} {...props} />} />
-                                {/*<Route exact path="/config/puestos" render={(props) => <Puestos session={data} refetch={refetch} {...props} />} />*/}
+                                <Route exact path="/config/puestos" render={(props) => <Puestos session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/config/categorias" render={(props) => <Categoria session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/config/ubicaciones" render={(props) => <Ubicacion session={data} refetch={refetch} {...props} />} />
 
@@ -111,7 +129,7 @@ const Router = ({ refetch, session }) => {
                                 <Route exact path="/movimientos/:id/:nombre" render={(props) => <Movimientos session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/movimiento/nuevo/:id" render={(props) => <NuevoMovimiento session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/salida/:id" render={(props) => <Salida session={data} refetch={refetch} {...props} />} />
-                                {/* 
+                                
                                 <Route exact path="/productos" render={(props) => <Productos session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/productos/nuevo" render={(props) => <NuevoProducto session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/productos/editar/:id" render={(props) => <EditarProducto session={data} refetch={refetch} {...props} />} />
@@ -131,7 +149,7 @@ const Router = ({ refetch, session }) => {
                                 <Route exact path="/movimientos_dispensado/:id/:nombre" render={(props) => <MovimientosDispensado session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/movimiento_dispensado/nuevo/:id" render={(props) => <NuevoMovimientoDispensado session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/salida_dispensado/:id" render={(props) => <SalidaMovimientoDispensado session={data} refetch={refetch} {...props} />} />
-                                */}
+                                
                                 <Route exact path="/maquinaria" render={(props) => <Maquinaria session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/maquinaria/nuevo" render={(props) => <NuevaMaquina session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/maquinaria/editar/:id" render={(props) => <EditarMaquina uso={true} session={data} refetch={refetch} {...props} />} />
