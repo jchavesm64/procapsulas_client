@@ -15,7 +15,7 @@ const Configuracion = ({session}) => {
                 <Card link={"/config/formulasbase"} name="Gestionar Nueva Fórmula Base" icon="calculator"/>
                 <Card link={"/config/categorias"} name="Gestionar Categorias de Máquinas" icon="list"/>
                 <Card link={"/config/ubicaciones"} name="Gestionar Ubicaciones en Planta" icon="fas fa-map-marker"/>
-                {/*<Card link={"/config/puestos"} name="Gestionar Puestos de Trabajo" icon="fas fa-briefcase"/>*/}
+                <Card link={"/config/puestos"} name="Gestionar Puestos de Trabajo" icon="fas fa-briefcase"/>
             </div>
         </>
     )

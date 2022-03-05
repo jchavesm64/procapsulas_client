@@ -13,6 +13,7 @@ import CardSeleccion from '../Seleccion/Card'
 import CardMovimientosSeleccion from '../Seleccion/Movimientos/Card'
 import CardDispensado from '../Dispensado/Card'
 import CardMovimientosDispensado from '../Dispensado/Movimientos/Card'
+import CardPersonal from '../personal/Card'
 import Pagination from '../shared/Pagination'
 
 const DataGrid = ({ ...props }) => {
@@ -57,6 +58,8 @@ const DataGrid = ({ ...props }) => {
                 array.push(<CardDispensado key={i} dispensado={data[i]} {...props} />)
             }else if(type === 'movimientos_dispensado'){
                 array.push(<CardMovimientosDispensado key={i} movimiento={data[i]} {...props} />)
+            }else if(type === 'personal'){
+                array.push(<CardPersonal key={i} personal={data[i]} {...props} />)
             }
         }
         return array

@@ -64,6 +64,11 @@ import EditarDispensado from '../components/Dispensado/Editar';
 import MovimientosDispensado from '../components/Dispensado/Movimientos/Movimientos';
 import NuevoMovimientoDispensado from '../components/Dispensado/Movimientos/Nuevo';
 import SalidaMovimientoDispensado from '../components/Dispensado/Movimientos/Salida';
+import Personal from '../components/personal/Personal';
+import NuevoPersonal from '../components/personal/NuevoPersonal';
+import EditarPersonal from '../components/personal/EditarPersonal';
+import CargarHoras from '../components/personal/CargarHoras';
+import Planilla from '../components/personal/Planilla';
 
 const Router = ({ refetch, session }) => {
 
@@ -112,11 +117,12 @@ const Router = ({ refetch, session }) => {
                                 <Route exact path="/clientes/editar/:id" render={(props) => <EditarCliente uso={true} session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/clientes/detalles/:id" render={(props) => <EditarCliente uso={false} session={data} refetch={refetch} {...props} />} />
 
-                                {/*
                                 <Route exact path="/personal" render={(props) => <Personal session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/personal/nuevo" render={(props) => <NuevoPersonal session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/personal/editar/:id" render={(props) => <EditarPersonal uso={true} session={data} refetch={refetch} {...props} />} />
-                                */}
+                                <Route exact path="/personal/detalles/:id" render={(props) => <EditarPersonal uso={false} session={data} refetch={refetch} {...props} />} />
+                                <Route exact path="/personal/cargarhoras" render={(props) => <CargarHoras session={data} refetch={refetch} {...props} />} />
+                                <Route exact path="/personal/planilla" render={(props) => <Planilla session={data} refetch={refetch} {...props} />} />
 
                                 <Route exact path="/proveedores" render={(props) => <Proveedores session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/proveedores/nuevo" render={(props) => <NuevoProveedor session={data} refetch={refetch} {...props} />} />
