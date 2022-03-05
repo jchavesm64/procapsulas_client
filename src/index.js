@@ -13,7 +13,7 @@ import { createUploadLink } from 'apollo-upload-client';
 import { ApolloProvider } from 'react-apollo';
 import { Notification } from 'rsuite';
 
-const uploadLink = createUploadLink({ uri: "http://localhost:4000/graphql" });
+const uploadLink = createUploadLink({ uri: "https://procapsulasapi.herokuapp.com/graphql" });
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token');
