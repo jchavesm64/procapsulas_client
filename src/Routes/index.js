@@ -69,19 +69,26 @@ import NuevoPersonal from '../components/personal/NuevoPersonal';
 import EditarPersonal from '../components/personal/EditarPersonal';
 import CargarHoras from '../components/personal/CargarHoras';
 import Planilla from '../components/personal/Planilla';
+import ManagerChequeo from '../components/PuestosLimpieza/Chequeos/ManagerChequeo';
+import Chequeos from '../components/PuestosLimpieza/Chequeos/Chequeos';
+import PuestosLimpieza from '../components/PuestosLimpieza/PuestosLimpieza'
+import NuevoPuestoLimpieza from '../components/PuestosLimpieza/Nuevo';
+import EditarPuestoLimpieza from '../components/PuestosLimpieza/Editar';
 
 const Router = ({ refetch, session }) => {
 
     const { obtenerUsuarioAutenticado } = session;
     const { estado, data } = obtenerUsuarioAutenticado;
     let info = window.location.href.toString().includes('info')
+    const vinculo = localStorage.getItem('id_vincular_puesto')
     var mensaje = (!session || !estado) ? info ? '' : <Redirect to="/login" /> : ''
+    mensaje = (vinculo !== null) ? <Redirect to="/puestos_limpieza/chequeo" /> : mensaje
     return (
         <BrowserRouter>
             <>
                 {mensaje}
                 <div className="wrapper">
-                    {estado ? info ? '' : <Sidebar session={data} /> : ''}
+                    {estado ? (info || (vinculo !== null)) ? '' : <Sidebar session={data} /> : ''}
                     <div id="content">
                         <NavMenu session={data} refetch={refetch} />
                         <div className="container-fluid p-5">
@@ -171,12 +178,13 @@ const Router = ({ refetch, session }) => {
                                 <Route exact path="/cotizar" render={(props) => <Cotizador session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/cotizaciones" render={(props) => <Cotizaciones session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/cotizaciones/editar/:id" render={(props) => <EditarCotizacion session={data} refetch={refetch} {...props} />} />
-                                {/* 
+                                
                                 <Route exact path="/puestos_limpieza" render={(props) => <PuestosLimpieza session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/puestos_limpieza/nuevo" render={(props) => <NuevoPuestoLimpieza session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/puestos_limpieza/editar/:id" render={(props) => <EditarPuestoLimpieza uso={true} session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/puestos_limpieza/detalles/:id" render={(props) => <EditarPuestoLimpieza uso={false} session={data} refetch={refetch} {...props} />} />
-                                */}
+                                <Route exact path="/puestos_limpieza/chequeo" render={(props) => <ManagerChequeo session={data} refetch={refetch} {...props} />} />
+                                <Route exact path="/puestos_limpieza/chequeos/:id" render={(props) => <Chequeos session={data} refetch={refetch} {...props} />} />
                                 {(estado && localStorage.getItem('rol')) ? <Redirect to='/perfil' /> : <Redirect to="/login" />}
                             </Switch>
                         </div>

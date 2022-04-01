@@ -180,6 +180,27 @@ const SideBar = ({ session }) => {
                                         </li>
                                         : ''
                                 }
+                                {
+                                    session.roles.some(rol => rol.tipo === rolTipo && (rol.permisos.some(permiso => permiso.descripcion === "PUESTOS_LIMPIEZA"))) ?
+                                        <li>
+                                            <a href="#puestos" data-bs-toggle="collapse" aria-expanded="false" >
+                                                <h6><i className="fas fa-soap" />Puestos de Limpieza</h6>
+                                                <strong><i className="fas fa-soap" />Puestos de Limpieza</strong>
+                                            </a>
+                                            <ul className="collapse list-unstyled" id="puestos">
+                                                <li className="List">
+                                                    <Link to={`/puestos_limpieza`}><i className="fas fa-soap" />Puesto de Limpieza</Link>
+                                                </li>
+                                                {
+                                                    session.roles.some(rol => rol.acciones[0]['agregar'] === true) ?
+                                                        <li className="List">
+                                                            <Link to={`/puestos_limpieza/nuevo`}><Icon icon="plus" />Nuevo Puesto</Link>
+                                                        </li> : ""
+                                                }
+                                            </ul>
+                                        </li>
+                                        : ''
+                                }
                             </ul>
                             <ul className="list-unstyled components">
                                 <li className="link">
