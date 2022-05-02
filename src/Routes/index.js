@@ -74,6 +74,14 @@ import Chequeos from '../components/PuestosLimpieza/Chequeos/Chequeos';
 import PuestosLimpieza from '../components/PuestosLimpieza/PuestosLimpieza'
 import NuevoPuestoLimpieza from '../components/PuestosLimpieza/Nuevo';
 import EditarPuestoLimpieza from '../components/PuestosLimpieza/Editar';
+import Activos from '../components/Activos/Activos';
+import NuevoActivo from '../components/Activos/Nuevo';
+import EditarActivos from '../components/Activos/Editar';
+import Insumos from '../components/Insumos/Insumos';
+import NuevoInsumo from '../components/Insumos/Nuevo';
+import EditarInsumo from '../components/Insumos/Editar';
+import MovimientosInsumos from '../components/Insumos/Movimientos/Movimientos';
+import NuevoMovimientoInsumo from '../components/Insumos/Movimientos/Nuevo';
 
 const Router = ({ refetch, session }) => {
 
@@ -185,6 +193,17 @@ const Router = ({ refetch, session }) => {
                                 <Route exact path="/puestos_limpieza/detalles/:id" render={(props) => <EditarPuestoLimpieza uso={false} session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/puestos_limpieza/chequeo" render={(props) => <ManagerChequeo session={data} refetch={refetch} {...props} />} />
                                 <Route exact path="/puestos_limpieza/chequeos/:id" render={(props) => <Chequeos session={data} refetch={refetch} {...props} />} />
+								
+								<Route exact path="/activos" render={(props) => <Activos session={data} refetch={refetch} {...props} />} />
+                                <Route exact path="/activos/nuevo" render={(props) => <NuevoActivo session={data} refetch={refetch} {...props} />} />
+                                <Route exact path="/activos/editar/:id" render={(props) => <EditarActivos uso={true} session={data} refetch={refetch} {...props} />} />
+
+                                <Route exact path="/insumos" render={(props) => <Insumos session={data} refetch={refetch} {...props} />} />
+                                <Route exact path="/insumos/nuevo" render={(props) => <NuevoInsumo session={data} refetch={refetch} {...props} />} />
+                                <Route exact path="/insumos/editar/:id" render={(props) => <EditarInsumo session={data} refetch={refetch} {...props} />} />
+                                <Route exact path="/movimientos_insumo/:id" render={(props) => <MovimientosInsumos session={data} refetch={refetch} {...props} />} />
+                                <Route exact path="/movimientos_insumo/nuevo/:id" render={(props) => <NuevoMovimientoInsumo session={data} refetch={refetch} {...props} />} />
+								
                                 {(estado && localStorage.getItem('rol')) ? <Redirect to='/perfil' /> : <Redirect to="/login" />}
                             </Switch>
                         </div>
